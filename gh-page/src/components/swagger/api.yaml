@@ -1,0 +1,33 @@
+openapi: 3.0.0
+info:
+  title: Glasswall Policy Management API
+  description: These are HTTP endpoints that query the policy store
+  version: 0.1.9
+servers:
+  - url: http://localhost
+paths:
+  /T/B/D:
+    post:
+      summary: TBD
+      description: TBD
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                TBD:
+                  type: number
+      responses:
+        200:    
+          description: OK - The transactions were retrieved successfully
+          content:          
+            "application/json":
+              schema:
+                type: object
+                description: TBD
+                properties:
+                  TBD:
+                    type: number
+                    description: TBD
+                    example: 1
