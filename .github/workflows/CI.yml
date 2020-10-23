@@ -1,0 +1,26 @@
+name: CI Build
+
+env:
+  REPOSITORY: glasswallsolutions
+  IMAGE: policymanagementapi
+  TAG: develop
+
+on:
+  push:
+    branches: [develop]
+ 
+jobs:
+  merge-to-master:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@master
+      - name: Merge to master branch 🔃
+        uses: devmasx/merge-branch@v1.1.0
+        with:
+          type: now
+          target_branch: master
+        env:
+          GITHUB_TOKEN: ${{secrets.TOKEN_GITHUB}}  
+          
+
