@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  policymanagement.api:
+    image: ${DOCKER_REGISTRY-}policymanagementapi
+    build:
+      context: .
+      dockerfile: ../Dockerfile
