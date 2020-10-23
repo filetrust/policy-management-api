@@ -6,28 +6,53 @@ info:
 servers:
   - url: http://localhost
 paths:
-  /T/B/D:
-    post:
-      summary: TBD
-      description: TBD
+  /v1/policy/draft:
+    get:
+      summary: Get the draft policy
+      description: Searches the policy store for the draft policy
+  /v1/policy/current:
+    get:
+      summary: Get the current policy
+      description: Searches the policy store for the current policy
+  /v1/policy/history:
+    get:
+      summary: Get List of Historical Policies
+      description: Searches the policy store for all previous policies
+  /v1/policy:
+    get:
+      summary: Search Policy By Id
+      description: Searches the policy store for the policy that matches the provided ID
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: "Unique identification of the Policy to Get"
+          example: "0140daa9-7da3-4445-964c-e87a2e70f909"
+    put:
+      summary: Saves the provided policy as draft
+      description: Replaces the contents of the draft policy with the provided policy
       requestBody:
         content:
-          "application/json":
-            schema:
-              type: object
-              properties:
-                TBD:
-                  type: number
-      responses:
-        200:    
-          description: OK - The transactions were retrieved successfully
-          content:          
             "application/json":
               schema:
                 type: object
-                description: TBD
                 properties:
-                  TBD:
-                    type: number
-                    description: TBD
-                    example: 1
+                  Id:
+                    example: 0140daa9-7da3-4445-964c-e87a2e70f909
+    delete:
+      summary: Delete the provided policy
+      description: Searches for the policy matching the ID and deletes it from the store.
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: "Unique identification of the Policy to delete"
+          example: "0140daa9-7da3-4445-964c-e87a2e70f909"
+  /v1/policy/publish:
+    post:
+      summary: Publish the draft policy
+      description: Searches the policy store for the draft policy and publishes it
