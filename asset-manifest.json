@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.css": "/policy-management-api/static/css/main.1fc5229c.chunk.css",
+    "main.js": "/policy-management-api/static/js/main.e550251b.chunk.js",
+    "main.js.map": "/policy-management-api/static/js/main.e550251b.chunk.js.map",
+    "runtime-main.js": "/policy-management-api/static/js/runtime-main.a4d293b0.js",
+    "runtime-main.js.map": "/policy-management-api/static/js/runtime-main.a4d293b0.js.map",
+    "static/css/2.ecb7c289.chunk.css": "/policy-management-api/static/css/2.ecb7c289.chunk.css",
+    "static/js/2.9281a09f.chunk.js": "/policy-management-api/static/js/2.9281a09f.chunk.js",
+    "static/js/2.9281a09f.chunk.js.map": "/policy-management-api/static/js/2.9281a09f.chunk.js.map",
+    "index.html": "/policy-management-api/index.html",
+    "precache-manifest.113efc33c8b44ec089069665b4e79637.js": "/policy-management-api/precache-manifest.113efc33c8b44ec089069665b4e79637.js",
+    "service-worker.js": "/policy-management-api/service-worker.js",
+    "static/css/2.ecb7c289.chunk.css.map": "/policy-management-api/static/css/2.ecb7c289.chunk.css.map",
+    "static/css/main.1fc5229c.chunk.css.map": "/policy-management-api/static/css/main.1fc5229c.chunk.css.map",
+    "static/js/2.9281a09f.chunk.js.LICENSE.txt": "/policy-management-api/static/js/2.9281a09f.chunk.js.LICENSE.txt",
+    "static/media/api.yaml": "/policy-management-api/static/media/api.39e0f408.yaml",
+    "static/media/App.css": "/policy-management-api/static/media/roboto-regular-webfont.d96d07c1.woff2",
+    "static/media/logo.svg": "/policy-management-api/static/media/logo.6c8e5727.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a4d293b0.js",
+    "static/css/2.ecb7c289.chunk.css",
+    "static/js/2.9281a09f.chunk.js",
+    "static/css/main.1fc5229c.chunk.css",
+    "static/js/main.e550251b.chunk.js"
+  ]
+}
