@@ -4,13 +4,13 @@ namespace Glasswall.PolicyManagement.Common.Models.Adaption.ContentFlags
 {
     public class WordContentFlags
     {
-        public ContentFlagAction DynamicDataExchange { get; set; }
-        public ContentFlagAction EmbeddedFiles { get; set; }
-        public ContentFlagAction EmbeddedImages { get; set; }
-        public ContentFlagAction ExternalHyperlinks { get; set; }
-        public ContentFlagAction InternalHyperlinks { get; set; }
-        public ContentFlagAction Macros { get; set; }
-        public ContentFlagAction Metadata { get; set; }
-        public ContentFlagAction ReviewComments { get; set; }
+        public ContentManagementFlagAction DynamicDataExchange { get; set; }
+        public ContentManagementFlagAction EmbeddedFiles { get; set; }
+        public ContentManagementFlagAction EmbeddedImages { get; set; }
+        public ContentManagementFlagAction ExternalHyperlinks { get; set; }
+        public ContentManagementFlagAction InternalHyperlinks { get; set; }
+        public ContentManagementFlagAction Macros { get; set; }
+        public ContentManagementFlagAction Metadata { get; set; }
+        public ContentManagementFlagAction ReviewComments { get; set; }
     }
 }
