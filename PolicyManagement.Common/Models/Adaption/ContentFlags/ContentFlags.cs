@@ -2,9 +2,9 @@
 {
     public class ContentFlags
     {
-        public PdfContentFlags PdfContentFlags { get; set; }
-        public WordContentFlags WordContentFlags { get; set; }
-        public ExcelContentFlags ExcelContentFlags { get; set; }
-        public PowerPointContentFlags PowerPointContentFlags { get; set; }
+        public PdfContentFlags PdfContentManagement { get; set; }
+        public WordContentFlags WordContentManagement { get; set; }
+        public ExcelContentFlags ExcelContentManagement { get; set; }
+        public PowerPointContentFlags PowerPointContentManagement { get; set; }
     }
 }

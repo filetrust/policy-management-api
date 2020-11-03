@@ -2,6 +2,6 @@
 {
     public class AdaptionPolicy
     {
-        public ContentFlags.ContentFlags ContentFlags { get; set; }
+        public ContentFlags.ContentFlags ContentManagementFlags { get; set; }
     }
 }
