@@ -15,7 +15,7 @@ namespace Glasswall.PolicyManagement.Api.Controllers
 
         public PolicyController(IPolicyService policyService)
         {
-            _policyService = policyService;
+            _policyService = policyService ?? throw new ArgumentNullException(nameof(policyService));
         }
 
         [HttpGet("draft")]
