@@ -14,7 +14,7 @@ namespace Glasswlal.PolicyManagement.Business.Serialisation
             return Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<TObject>(Encoding.UTF8.GetString(ms.ToArray())));
         }
 
-        public Task<string> Serialise<TObject>(TObject model, CancellationToken token)
+        public Task<string> Serialise<TObject>(TObject model, CancellationToken cancellationToken)
         {
             return Task.FromResult(Newtonsoft.Json.JsonConvert.SerializeObject(model));
         }

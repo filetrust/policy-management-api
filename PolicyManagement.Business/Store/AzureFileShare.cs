@@ -45,10 +45,10 @@ namespace Glasswlal.PolicyManagement.Business.Store
             return InternalDeleteDirectoryAsync(path, cancellationToken);
         }
 
-        public Task UploadAsync(string path, byte[] bytes, CancellationToken token)
+        public Task UploadAsync(string path, byte[] bytes, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(path)) throw new ArgumentException("Value must not be null or whitespace", nameof(path));
-            return InternalUploadAsync(path, bytes, token);
+            return InternalUploadAsync(path, bytes, cancellationToken);
         }
 
         private async Task InternalUploadAsync(string path, byte[] bytes, CancellationToken cancellationToken)
@@ -91,11 +91,11 @@ namespace Glasswlal.PolicyManagement.Business.Store
             return await InternalExistsAsync(_shareClient.GetDirectoryClient(path), cancellationToken);
         }
 
-        private static async Task<bool> InternalExistsAsync(ShareDirectoryClient client, CancellationToken token)
+        private static async Task<bool> InternalExistsAsync(ShareDirectoryClient client, CancellationToken cancellationToken)
         {
             try
             {
-                return await client.ExistsAsync(token);
+                return await client.ExistsAsync(cancellationToken);
             }
             catch (RequestFailedException rex)
             {
@@ -106,11 +106,11 @@ namespace Glasswlal.PolicyManagement.Business.Store
             }
         }
 
-        private static async Task<bool> InternalExistsAsync(ShareFileClient client, CancellationToken token)
+        private static async Task<bool> InternalExistsAsync(ShareFileClient client, CancellationToken cancellationToken)
         {
             try
             {
-                return await client.ExistsAsync(token);
+                return await client.ExistsAsync(cancellationToken);
             }
             catch (RequestFailedException rex)
             {

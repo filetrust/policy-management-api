@@ -68,10 +68,10 @@ namespace Glasswall.PolicyManagement.Api.Controllers
             return Ok(policy);
         }
 
-        [HttpPost("draft/publish")]
-        public async Task<IActionResult> PublishDraft(CancellationToken cancellationToken)
+        [HttpPut("draft/publish")]
+        public async Task<IActionResult> PublishDraft([FromQuery]Guid id, CancellationToken cancellationToken)
         {
-            await _policyService.PublishAsync(cancellationToken);
+            await _policyService.PublishAsync(id, cancellationToken);
 
             return Ok();
         }
@@ -86,10 +86,10 @@ namespace Glasswall.PolicyManagement.Api.Controllers
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("draft/save")]
         public async Task<IActionResult> SavePolicy([FromBody]PolicyModel policyModel, CancellationToken cancellationToken)
         {
-            await _policyService.SaveAsync(policyModel, cancellationToken);
+            await _policyService.SaveAsDraftAsync(policyModel, cancellationToken);
 
             return Ok();
         }

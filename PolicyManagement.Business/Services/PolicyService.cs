@@ -10,6 +10,7 @@ using Glasswall.PolicyManagement.Common.Serialisation;
 using Glasswall.PolicyManagement.Common.Services;
 using Glasswall.PolicyManagement.Common.Store;
 using Glasswlal.PolicyManagement.Business.Store;
+using Microsoft.Extensions.Logging;
 
 namespace Glasswlal.PolicyManagement.Business.Services
 {
@@ -21,73 +22,94 @@ namespace Glasswlal.PolicyManagement.Business.Services
         private const string HistoryPathTemplate = "historical/{0}/" + PolicyFileName;
 
         private readonly IFileShare _fileShare;
+        private readonly ILogger<PolicyService> _logger;
         private readonly IJsonSerialiser _jsonSerialiser;
 
         public PolicyService(
             IFileShare fileShare,
+            ILogger<PolicyService> logger,
             IJsonSerialiser jsonSerialiser)
         {
             _fileShare = fileShare ?? throw new ArgumentNullException(nameof(fileShare));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _jsonSerialiser = jsonSerialiser ?? throw new ArgumentNullException(nameof(jsonSerialiser));
         }
 
-        public async Task<PolicyModel> GetDraftAsync(CancellationToken token)
+        public async Task<PolicyModel> GetDraftAsync(CancellationToken cancellationToken)
         {
-            return await InternalDownloadAsync(DraftPolicyPath, token);
+            var draft = await InternalDownloadAsync(DraftPolicyPath, cancellationToken);
+
+            if (draft != null) return draft;
+            
+            var current = await GetCurrentAsync(cancellationToken);
+            return current.ToDraft();
         }
 
-        public async Task<PolicyModel> GetCurrentAsync(CancellationToken token)
+        public async Task<PolicyModel> GetCurrentAsync(CancellationToken cancellationToken)
         {
-            return await InternalDownloadAsync(CurrentPolicyPath, token);
+            return await InternalDownloadAsync(CurrentPolicyPath, cancellationToken);
         }
 
-        public async IAsyncEnumerable<PolicyModel> GetHistoricalPoliciesAsync([EnumeratorCancellation] CancellationToken token)
+        public async IAsyncEnumerable<PolicyModel> GetHistoricalPoliciesAsync([EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            await foreach (var path in _fileShare.ListAsync(new HistorySearch(), token))
-                yield return await InternalDownloadAsync(path, token);
+            await foreach (var path in _fileShare.ListAsync(new HistorySearch(), cancellationToken))
+                yield return await InternalDownloadAsync(path, cancellationToken);
+        }
+        
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+        {
+            if (await _fileShare.ExistsAsync(string.Format(HistoryPathTemplate, id), cancellationToken))
+            {
+                await _fileShare.DeleteDirectoryAsync(string.Format(HistoryPathTemplate, id), cancellationToken);
+            }
+            else
+            {
+                var draftPolicy = await GetDraftAsync(cancellationToken);
+                if (draftPolicy.Id == id) await _fileShare.DeleteDirectoryAsync(DraftPolicyPath, cancellationToken);
+            }
+
+            _logger.LogInformation($"Deleted policy {id}.");
         }
 
-        public async Task<PolicyModel> GetPolicyByIdAsync(Guid id, CancellationToken token)
+        public async Task<PolicyModel> GetPolicyByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            await foreach (var path in _fileShare.ListAsync(new HistorySearchById(id), token))
-                return await InternalDownloadAsync($"{path}/{PolicyFileName}", token);
+            var historicPolicyById = await InternalDownloadAsync(string.Format(HistoryPathTemplate, id), cancellationToken);
+            if (historicPolicyById != null) return historicPolicyById;
 
-            var currentPolicy = await GetCurrentAsync(token);
+            var currentPolicy = await GetCurrentAsync(cancellationToken);
             if (currentPolicy?.Id == id) return currentPolicy;
 
-            var draftPolicy = await GetDraftAsync(token);
+            var draftPolicy = await GetDraftAsync(cancellationToken);
             return draftPolicy?.Id == id ? draftPolicy : null;
         }
 
-        public async Task PublishAsync(CancellationToken token)
+        public async Task PublishAsync(Guid id, CancellationToken cancellationToken)
         {
-            var draft = await GetDraftAsync(token);
-            if (draft == null) return;
+            var policyToPublish = await GetPolicyByIdAsync(id, cancellationToken);
 
-            var current = await GetCurrentAsync(token);
-            if (current == null) return;
+            if (policyToPublish == null || policyToPublish.PolicyType == PolicyType.Current)
+                return;
+            
+            var currentPolicy = await GetCurrentAsync(cancellationToken);
+            var policyToPublishType = policyToPublish.PolicyType;
+            policyToPublish.PolicyType = PolicyType.Current;
+            policyToPublish.Published = DateTimeOffset.UtcNow;
+            
+            await InternalUploadPolicyAsync(CurrentPolicyPath, policyToPublish, cancellationToken);
 
-            current.PolicyState = PolicyState.Historical;
-            draft.PolicyState = PolicyState.Published;
+            if (policyToPublishType == PolicyType.Draft)
+                await SaveAsDraftAsync(policyToPublish.ToDraft(), cancellationToken);
+            else // Historic
+                await _fileShare.DeleteDirectoryAsync(string.Format(HistoryPathTemplate, id), cancellationToken);
 
-            await InternalUploadPolicyAsync(string.Format(HistoryPathTemplate, current.Id), current, token);
-            await InternalUploadPolicyAsync(CurrentPolicyPath, draft, token);
-            await _fileShare.DeleteDirectoryAsync(DraftPolicyPath, token);
+            currentPolicy.PolicyType = PolicyType.Historical;
+            await InternalUploadPolicyAsync(string.Format(HistoryPathTemplate, currentPolicy.Id), currentPolicy, cancellationToken);
         }
 
-        public Task SaveAsync(PolicyModel policyModel, CancellationToken token)
+        public Task SaveAsDraftAsync(PolicyModel policyModel, CancellationToken cancellationToken)
         {
             if (policyModel == null) throw new ArgumentNullException(nameof(policyModel));
-            return InternalSaveAsync(policyModel, token);
-        }
-        
-        public async Task DeleteAsync(Guid id, CancellationToken token)
-        {
-            await foreach (var path in _fileShare.ListAsync(new HistorySearchById(id), token))
-            {
-                await _fileShare.DeleteDirectoryAsync(path, token);
-                return;
-            }
+            return InternalSaveAsDraftAsync(policyModel, cancellationToken);
         }
 
         private async Task<PolicyModel> InternalDownloadAsync(string path, CancellationToken ct)
@@ -99,17 +121,17 @@ namespace Glasswlal.PolicyManagement.Business.Services
             return await _jsonSerialiser.Deserialize<PolicyModel>(ms, ct);
         }
 
-        private async Task InternalSaveAsync(PolicyModel policyModel, CancellationToken cancellationToken)
+        private async Task InternalSaveAsDraftAsync(PolicyModel policyModel, CancellationToken cancellationToken)
         {
-            policyModel.Timestamp = DateTimeOffset.UtcNow;
+            policyModel.LastEdited = DateTimeOffset.UtcNow;
             await InternalUploadPolicyAsync(DraftPolicyPath, policyModel, cancellationToken);
         }
 
-        private async Task InternalUploadPolicyAsync(string path, PolicyModel policyModel, CancellationToken cancellationToken)
+        private async Task InternalUploadPolicyAsync(string fullPolicyJsonPath, PolicyModel policyModel, CancellationToken cancellationToken)
         {
             var jsonFile = await _jsonSerialiser.Serialise(policyModel, cancellationToken);
             var bytes = Encoding.UTF8.GetBytes(jsonFile);
-            await _fileShare.UploadAsync(path, bytes, cancellationToken);
+            await _fileShare.UploadAsync(fullPolicyJsonPath, bytes, cancellationToken);
         }
     }
 }

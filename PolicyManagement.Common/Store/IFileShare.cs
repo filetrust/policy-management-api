@@ -34,7 +34,7 @@ namespace Glasswall.PolicyManagement.Common.Store
         Task<MemoryStream> DownloadAsync(string path, CancellationToken cancellationToken);
 
         Task DeleteDirectoryAsync(string path, CancellationToken cancellationToken);
-        Task UploadAsync(string path, byte[] bytes, CancellationToken token);
+        Task UploadAsync(string path, byte[] bytes, CancellationToken cancellationToken);
     }
 
     public interface IPathFilter

@@ -8,18 +8,18 @@ namespace Glasswall.PolicyManagement.Common.Services
 {
     public interface IPolicyService
     {
-        Task<PolicyModel> GetDraftAsync(CancellationToken token);
+        Task<PolicyModel> GetDraftAsync(CancellationToken cancellationToken);
         
-        Task<PolicyModel> GetCurrentAsync(CancellationToken token);
+        Task<PolicyModel> GetCurrentAsync(CancellationToken cancellationToken);
         
-        IAsyncEnumerable<PolicyModel> GetHistoricalPoliciesAsync(CancellationToken token);
+        IAsyncEnumerable<PolicyModel> GetHistoricalPoliciesAsync(CancellationToken cancellationToken);
         
-        Task<PolicyModel> GetPolicyByIdAsync(Guid id, CancellationToken token);
+        Task<PolicyModel> GetPolicyByIdAsync(Guid id, CancellationToken cancellationToken);
 
-        Task PublishAsync(CancellationToken token);
+        Task PublishAsync(Guid id, CancellationToken cancellationToken);
 
-        Task SaveAsync(PolicyModel policyModel, CancellationToken token);
+        Task SaveAsDraftAsync(PolicyModel policyModel, CancellationToken cancellationToken);
         
-        Task DeleteAsync(Guid id, CancellationToken token);
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
     }
 }

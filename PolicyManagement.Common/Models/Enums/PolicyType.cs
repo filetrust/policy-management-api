@@ -1,9 +1,9 @@
 ﻿namespace Glasswall.PolicyManagement.Common.Models.Enums
 {
-    public enum PolicyState
+    public enum PolicyType
     {
         Draft,
-        Published,
+        Current,
         Historical
     }
 }

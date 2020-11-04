@@ -33,11 +33,18 @@ namespace Glasswlal.PolicyManagement.Business.Services
         {
             foreach (var endpoint in _policyManagementApiConfiguration.PolicyUpdateServiceEndpointCsv.Split(','))
             {
-                _logger.LogInformation($"Signalling Policy Update to '{endpoint}' starting");
+                try
+                {
+                    _logger.LogInformation($"Signalling Policy Update to '{endpoint}' starting");
+                    
+                    await endpoint.PutJsonAsync(policy.AdaptionPolicy, cancellationToken);
 
-                await endpoint.PutJsonAsync(policy.AdaptionPolicy, cancellationToken);
-
-                _logger.LogInformation($"Signalling Policy Update to '{endpoint}' complete");
+                    _logger.LogInformation($"Signalling Policy Update to '{endpoint}' complete");
+                }
+                catch (FlurlHttpException ex)
+                {
+                    _logger.LogCritical($"Error returned from {ex.Call.Request.Url}: {ex.Message}");
+                }
             }
         }
     }
