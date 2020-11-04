@@ -8,6 +8,7 @@ using Glasswall.PolicyManagement.Common.Configuration.Validation;
 using Glasswall.PolicyManagement.Common.Services;
 using Glasswall.PolicyManagement.Common.Store;
 using Glasswlal.PolicyManagement.Business.Configuration;
+using Glasswlal.PolicyManagement.Business.Serialisation;
 using Glasswlal.PolicyManagement.Business.Services;
 using Glasswlal.PolicyManagement.Business.Store;
 using Microsoft.AspNetCore.Builder;
@@ -56,7 +57,8 @@ namespace Glasswall.PolicyManagement.Api
             services.TryAddTransient<IConfigurationParser, EnvironmentVariableParser>();
             services.TryAddTransient<IDictionary<string, IConfigurationItemValidator>>(_ => new Dictionary<string, IConfigurationItemValidator>
             {
-                {nameof(IPolicyManagementApiConfiguration.AzureStorageConnectionString), new StringValidator(1)},
+                {nameof(IPolicyManagementApiConfiguration.AccountName), new StringValidator(1)},
+                {nameof(IPolicyManagementApiConfiguration.AccountKey), new StringValidator(1)},
                 {nameof(IPolicyManagementApiConfiguration.ShareName), new StringValidator(1)}
             });
             services.TryAddSingleton<IPolicyManagementApiConfiguration>(serviceProvider =>
@@ -66,13 +68,14 @@ namespace Glasswall.PolicyManagement.Api
             });
 
             services.TryAddTransient<IPolicyService, PolicyService>();
+            services.TryAddTransient<IJsonSerialiser, JsonSerialiser>();
 
             services.TryAddTransient(s =>
             {
                 var configuration = s.GetRequiredService<IPolicyManagementApiConfiguration>();
-                return new ShareServiceClient(configuration.AzureStorageConnectionString).GetShareClient(configuration.ShareName);
+                return new ShareServiceClient($"DefaultEndpointsProtocol=https;AccountName={configuration.AccountName};AccountKey={configuration.AccountKey};EndpointSuffix=core.windows.net").GetShareClient(configuration.ShareName);
             });
-
+                
             services.TryAddTransient<IEnumerable<IFileShare>>(s =>
             {
                 var clients = s.GetRequiredService<IEnumerable<ShareClient>>();

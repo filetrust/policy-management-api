@@ -5,6 +5,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ShareName=policies
+      - AccountName=sebicap
+      - AccountKey=ZXY5ITzkBepbKQUk4qwvRnuaVgkw3D9Tg99VcLnqWNoToImpqoG976vMhpSbcOFjqOF64qnI5tezysvvMWE7Eg==
+      - PolicyUpdateServiceEndpointCsv=localhost:5002
     ports:
       - "80"
       - "443"

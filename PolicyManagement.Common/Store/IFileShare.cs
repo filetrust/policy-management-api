@@ -32,6 +32,9 @@ namespace Glasswall.PolicyManagement.Common.Store
         /// <param name="cancellationToken"></param>
         /// <returns>A memory stream containing the data</returns>
         Task<MemoryStream> DownloadAsync(string path, CancellationToken cancellationToken);
+
+        Task DeleteDirectoryAsync(string path, CancellationToken cancellationToken);
+        Task UploadAsync(string path, byte[] bytes, CancellationToken token);
     }
 
     public interface IPathFilter
@@ -43,6 +46,7 @@ namespace Glasswall.PolicyManagement.Common.Store
     {
         Recurse,
         Collect,
-        Stop
+        Continue,
+        Break
     }
 }
