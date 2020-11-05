@@ -35,6 +35,15 @@ namespace Glasswall.PolicyManagement.Api.Controllers
             return Ok(policy);
         }
 
+
+        [HttpPut("draft")]
+        public async Task<IActionResult> SavePolicy([FromBody] PolicyModel policyModel, CancellationToken cancellationToken)
+        {
+            await _policyService.SaveAsDraftAsync(policyModel, cancellationToken);
+
+            return Ok();
+        }
+
         [HttpGet("current")]
         public async Task<IActionResult> GetCurrentPolicy(CancellationToken cancellationToken)
         {
@@ -57,7 +66,11 @@ namespace Glasswall.PolicyManagement.Api.Controllers
             if (!policies.Any())
                 return NoContent();
 
-            return Ok(policies);
+            return Ok(new HistoryResponse
+            {
+                Policies = policies,
+                PoliciesCount = policies.Count
+            });
         }
 
         [HttpGet]
@@ -68,7 +81,7 @@ namespace Glasswall.PolicyManagement.Api.Controllers
             return Ok(policy);
         }
 
-        [HttpPut("draft/publish")]
+        [HttpPut("publish")]
         public async Task<IActionResult> PublishDraft([FromQuery]Guid id, CancellationToken cancellationToken)
         {
             await _policyService.PublishAsync(id, cancellationToken);
@@ -82,14 +95,6 @@ namespace Glasswall.PolicyManagement.Api.Controllers
             var currentPolicy = await _policyService.GetCurrentAsync(cancellationToken);
 
             await _policyDistributer.Distribute(currentPolicy, cancellationToken);
-
-            return Ok();
-        }
-
-        [HttpPut("draft/save")]
-        public async Task<IActionResult> SavePolicy([FromBody]PolicyModel policyModel, CancellationToken cancellationToken)
-        {
-            await _policyService.SaveAsDraftAsync(policyModel, cancellationToken);
 
             return Ok();
         }

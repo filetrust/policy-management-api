@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Glasswlal.PolicyManagement.Business</RootNamespace>
+    <RootNamespace>Glasswall.PolicyManagement.Business</RootNamespace>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 

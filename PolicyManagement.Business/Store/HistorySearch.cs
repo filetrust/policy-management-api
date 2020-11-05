@@ -1,6 +1,6 @@
 ﻿using Glasswall.PolicyManagement.Common.Store;
 
-namespace Glasswlal.PolicyManagement.Business.Store
+namespace Glasswall.PolicyManagement.Business.Store
 {
     public class HistorySearch : IPathFilter
     {

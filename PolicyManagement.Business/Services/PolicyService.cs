@@ -4,22 +4,25 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Glasswall.PolicyManagement.Business.Store;
 using Glasswall.PolicyManagement.Common.Models;
 using Glasswall.PolicyManagement.Common.Models.Enums;
 using Glasswall.PolicyManagement.Common.Serialisation;
 using Glasswall.PolicyManagement.Common.Services;
 using Glasswall.PolicyManagement.Common.Store;
-using Glasswlal.PolicyManagement.Business.Store;
 using Microsoft.Extensions.Logging;
 
-namespace Glasswlal.PolicyManagement.Business.Services
+namespace Glasswall.PolicyManagement.Business.Services
 {
     public class PolicyService : IPolicyService
     {
         private const string PolicyFileName = "policy.json";
-        private const string CurrentPolicyPath = "current/" + PolicyFileName;
-        private const string DraftPolicyPath = "draft/" + PolicyFileName;
-        private const string HistoryPathTemplate = "historical/{0}/" + PolicyFileName;
+        private const string CurrentDirPath = "current";
+        private const string CurrentPolicyPath = CurrentDirPath + "/" + PolicyFileName;
+        private const string DraftDirPath = "draft";
+        private const string DraftPolicyPath = DraftDirPath + "/" + PolicyFileName;
+        private const string HistoryFileTemplate = HistoryDirTemplate +"/" + PolicyFileName;
+        private const string HistoryDirTemplate = "historical/{0}";
 
         private readonly IFileShare _fileShare;
         private readonly ILogger<PolicyService> _logger;
@@ -53,19 +56,19 @@ namespace Glasswlal.PolicyManagement.Business.Services
         public async IAsyncEnumerable<PolicyModel> GetHistoricalPoliciesAsync([EnumeratorCancellation] CancellationToken cancellationToken)
         {
             await foreach (var path in _fileShare.ListAsync(new HistorySearch(), cancellationToken))
-                yield return await InternalDownloadAsync(path, cancellationToken);
+                yield return await InternalDownloadAsync($"{path}/{PolicyFileName}", cancellationToken);
         }
         
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            if (await _fileShare.ExistsAsync(string.Format(HistoryPathTemplate, id), cancellationToken))
+            if (await _fileShare.ExistsAsync(string.Format(HistoryDirTemplate, id), cancellationToken))
             {
-                await _fileShare.DeleteDirectoryAsync(string.Format(HistoryPathTemplate, id), cancellationToken);
+                await _fileShare.DeleteDirectoryAsync(string.Format(HistoryDirTemplate, id), cancellationToken);
             }
             else
             {
                 var draftPolicy = await GetDraftAsync(cancellationToken);
-                if (draftPolicy.Id == id) await _fileShare.DeleteDirectoryAsync(DraftPolicyPath, cancellationToken);
+                if (draftPolicy.Id == id) await _fileShare.DeleteDirectoryAsync(DraftDirPath, cancellationToken);
             }
 
             _logger.LogInformation($"Deleted policy {id}.");
@@ -73,7 +76,7 @@ namespace Glasswlal.PolicyManagement.Business.Services
 
         public async Task<PolicyModel> GetPolicyByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            var historicPolicyById = await InternalDownloadAsync(string.Format(HistoryPathTemplate, id), cancellationToken);
+            var historicPolicyById = await InternalDownloadAsync(string.Format(HistoryFileTemplate, id), cancellationToken);
             if (historicPolicyById != null) return historicPolicyById;
 
             var currentPolicy = await GetCurrentAsync(cancellationToken);
@@ -97,13 +100,13 @@ namespace Glasswlal.PolicyManagement.Business.Services
             
             await InternalUploadPolicyAsync(CurrentPolicyPath, policyToPublish, cancellationToken);
 
-            if (policyToPublishType == PolicyType.Draft)
-                await SaveAsDraftAsync(policyToPublish.ToDraft(), cancellationToken);
-            else // Historic
-                await _fileShare.DeleteDirectoryAsync(string.Format(HistoryPathTemplate, id), cancellationToken);
+            if (policyToPublishType == PolicyType.Historical)
+                await _fileShare.DeleteDirectoryAsync(string.Format(HistoryDirTemplate, id), cancellationToken);
+            else
+                await _fileShare.DeleteDirectoryAsync(DraftDirPath, cancellationToken);
 
             currentPolicy.PolicyType = PolicyType.Historical;
-            await InternalUploadPolicyAsync(string.Format(HistoryPathTemplate, currentPolicy.Id), currentPolicy, cancellationToken);
+            await InternalUploadPolicyAsync(string.Format(HistoryFileTemplate, currentPolicy.Id), currentPolicy, cancellationToken);
         }
 
         public Task SaveAsDraftAsync(PolicyModel policyModel, CancellationToken cancellationToken)

@@ -3,8 +3,8 @@
     public interface IPolicyManagementApiConfiguration
     {
         string ShareName { get; }
-        string AccountName { get; set; }
-        string AccountKey { get; set; }
-        string PolicyUpdateServiceEndpointCsv { get; set; }
+        string AccountName { get; }
+        string AccountKey { get; }
+        string PolicyUpdateServiceEndpointCsv { get; }
     }
 }

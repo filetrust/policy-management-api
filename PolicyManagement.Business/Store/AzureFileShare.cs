@@ -10,7 +10,7 @@ using Azure.Storage.Files.Shares;
 using Azure.Storage.Files.Shares.Models;
 using Glasswall.PolicyManagement.Common.Store;
 
-namespace Glasswlal.PolicyManagement.Business.Store
+namespace Glasswall.PolicyManagement.Business.Store
 {
     public class AzureFileShare : IFileShare
     {
@@ -65,7 +65,10 @@ namespace Glasswlal.PolicyManagement.Business.Store
                 }
 
                 var fileClient = curDir.GetFileClient(pathParts.Last());
+                await fileClient.DeleteIfExistsAsync(cancellationToken: cancellationToken);
                 using var ms = new MemoryStream(bytes);
+
+                await fileClient.CreateAsync(ms.Length, cancellationToken: cancellationToken);
                 await fileClient.UploadAsync(ms, cancellationToken: cancellationToken);
             }
         }

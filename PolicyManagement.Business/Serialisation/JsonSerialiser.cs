@@ -3,9 +3,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.PolicyManagement.Common.Serialisation;
-using Glasswlal.PolicyManagement.Business.Services;
 
-namespace Glasswlal.PolicyManagement.Business.Serialisation
+namespace Glasswall.PolicyManagement.Business.Serialisation
 {
     public class JsonSerialiser : IJsonSerialiser
     {

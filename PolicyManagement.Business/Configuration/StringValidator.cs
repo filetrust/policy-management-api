@@ -3,7 +3,7 @@ using System.Linq;
 using Glasswall.PolicyManagement.Common.Configuration.Validation;
 using Glasswall.PolicyManagement.Common.Configuration.Validation.Errors;
 
-namespace Glasswlal.PolicyManagement.Business.Configuration
+namespace Glasswall.PolicyManagement.Business.Configuration
 {
     public class StringValidator
         : IConfigurationItemValidator

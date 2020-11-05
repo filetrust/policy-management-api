@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolicyManagement.Api", "PolicyManagement\PolicyManagement.Api\PolicyManagement.Api.csproj", "{68040FE1-6712-49DD-8867-9D9D8482A3FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolicyManagement.Api", "PolicyManagement.Api\PolicyManagement.Api.csproj", "{68040FE1-6712-49DD-8867-9D9D8482A3FE}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "PolicyManagement\docker-compose.dcproj", "{4FC86203-200B-4031-9B05-1414D097975D}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{4FC86203-200B-4031-9B05-1414D097975D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolicyManagement.Common", "PolicyManagement.Common\PolicyManagement.Common.csproj", "{C014796F-D83D-4B74-B6CA-1DD7D8C7213D}"
 EndProject

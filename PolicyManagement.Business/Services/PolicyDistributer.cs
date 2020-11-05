@@ -7,7 +7,7 @@ using Glasswall.PolicyManagement.Common.Models;
 using Glasswall.PolicyManagement.Common.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Glasswlal.PolicyManagement.Business.Services
+namespace Glasswall.PolicyManagement.Business.Services
 {
     public class PolicyDistributer : IPolicyDistributer
     {
@@ -37,7 +37,7 @@ namespace Glasswlal.PolicyManagement.Business.Services
                 {
                     _logger.LogInformation($"Signalling Policy Update to '{endpoint}' starting");
                     
-                    await endpoint.PutJsonAsync(policy.AdaptionPolicy, cancellationToken);
+                    await $"{endpoint}/api/v1/policy".PutJsonAsync(policy.AdaptionPolicy, cancellationToken);
 
                     _logger.LogInformation($"Signalling Policy Update to '{endpoint}' complete");
                 }
