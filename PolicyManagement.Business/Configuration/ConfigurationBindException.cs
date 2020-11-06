@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Glasswall.PolicyManagement.Common.Configuration.Validation.Errors;
 
-namespace Glasswlal.PolicyManagement.Business.Configuration
+namespace Glasswall.PolicyManagement.Business.Configuration
 {
     [Serializable]
     public class ConfigurationBindException : Exception

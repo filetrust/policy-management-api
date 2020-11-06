@@ -8,6 +8,8 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["PolicyManagement.Api/PolicyManagement.Api.csproj", "PolicyManagement.Api/"]
+COPY ["PolicyManagement.Business/PolicyManagement.Business.csproj", "PolicyManagement.Business/"]
+COPY ["PolicyManagement.Common/PolicyManagement.Common.csproj", "PolicyManagement.Common/"]
 RUN dotnet restore "PolicyManagement.Api/PolicyManagement.Api.csproj"
 COPY . .
 WORKDIR "/src/PolicyManagement.Api"

@@ -1,3 +1,5 @@
 bin/
 obj/
 .vs/
+docker-compose.override.yml
+PolicyManagement.Api.Function/Properties/PublishProfiles/policymanagementapifunction20201016103513 - Web Deploy.pubxml

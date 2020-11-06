@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.PolicyManagement.Common.Models;
 
@@ -7,18 +8,18 @@ namespace Glasswall.PolicyManagement.Common.Services
 {
     public interface IPolicyService
     {
-        Task<PolicyModel> GetDraftAsync();
+        Task<PolicyModel> GetDraftAsync(CancellationToken cancellationToken);
         
-        Task<PolicyModel> GetCurrentAsync();
+        Task<PolicyModel> GetCurrentAsync(CancellationToken cancellationToken);
         
-        Task<IEnumerable<PolicyModel>> GetHistoricalPoliciesAsync();
+        IAsyncEnumerable<PolicyModel> GetHistoricalPoliciesAsync(CancellationToken cancellationToken);
         
-        Task<PolicyModel> GetPolicyByIdAsync(Guid id);
+        Task<PolicyModel> GetPolicyByIdAsync(Guid id, CancellationToken cancellationToken);
 
-        Task PublishAsync();
+        Task PublishAsync(Guid id, CancellationToken cancellationToken);
 
-        Task SaveAsync(PolicyModel policyModel);
+        Task SaveAsDraftAsync(PolicyModel policyModel, CancellationToken cancellationToken);
         
-        Task DeleteAsync(Guid id);
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
     }
 }

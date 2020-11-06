@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ using Azure.Storage.Files.Shares;
 using Azure.Storage.Files.Shares.Models;
 using Glasswall.PolicyManagement.Common.Store;
 
-namespace Glasswlal.PolicyManagement.Business.Store
+namespace Glasswall.PolicyManagement.Business.Store
 {
     public class AzureFileShare : IFileShare
     {
@@ -38,6 +39,40 @@ namespace Glasswlal.PolicyManagement.Business.Store
             return InternalDownloadAsync(path, cancellationToken);
         }
 
+        public Task DeleteDirectoryAsync(string path, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(path)) throw new ArgumentException("Value must not be null or whitespace", nameof(path));
+            return InternalDeleteDirectoryAsync(path, cancellationToken);
+        }
+
+        public Task UploadAsync(string path, byte[] bytes, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(path)) throw new ArgumentException("Value must not be null or whitespace", nameof(path));
+            return InternalUploadAsync(path, bytes, cancellationToken);
+        }
+
+        private async Task InternalUploadAsync(string path, byte[] bytes, CancellationToken cancellationToken)
+        {
+            var pathParts = path.Split('/');
+
+            if (pathParts.Length > 1)
+            {
+                var curDir = _shareClient.GetRootDirectoryClient();
+                for (var i = 0; i < pathParts.Length - 1; i++)
+                {
+                    curDir = curDir.GetSubdirectoryClient(pathParts[i]);
+                    await curDir.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
+                }
+
+                var fileClient = curDir.GetFileClient(pathParts.Last());
+                await fileClient.DeleteIfExistsAsync(cancellationToken: cancellationToken);
+                using var ms = new MemoryStream(bytes);
+
+                await fileClient.CreateAsync(ms.Length, cancellationToken: cancellationToken);
+                await fileClient.UploadAsync(ms, cancellationToken: cancellationToken);
+            }
+        }
+
         private async Task<MemoryStream> InternalDownloadAsync(string path, CancellationToken cancellationToken)
         {
             var fileClient = _shareClient.GetRootDirectoryClient().GetFileClient(path);
@@ -59,11 +94,11 @@ namespace Glasswlal.PolicyManagement.Business.Store
             return await InternalExistsAsync(_shareClient.GetDirectoryClient(path), cancellationToken);
         }
 
-        private static async Task<bool> InternalExistsAsync(ShareDirectoryClient client, CancellationToken token)
+        private static async Task<bool> InternalExistsAsync(ShareDirectoryClient client, CancellationToken cancellationToken)
         {
             try
             {
-                return await client.ExistsAsync(token);
+                return await client.ExistsAsync(cancellationToken);
             }
             catch (RequestFailedException rex)
             {
@@ -74,11 +109,11 @@ namespace Glasswlal.PolicyManagement.Business.Store
             }
         }
 
-        private static async Task<bool> InternalExistsAsync(ShareFileClient client, CancellationToken token)
+        private static async Task<bool> InternalExistsAsync(ShareFileClient client, CancellationToken cancellationToken)
         {
             try
             {
-                return await client.ExistsAsync(token);
+                return await client.ExistsAsync(cancellationToken);
             }
             catch (RequestFailedException rex)
             {
@@ -88,27 +123,65 @@ namespace Glasswlal.PolicyManagement.Business.Store
                 throw;
             }
         }
-        
+
+        private async Task InternalDeleteDirectoryAsync(string path, CancellationToken cancellationToken)
+        {
+            var directoryClient = _shareClient.GetDirectoryClient(path);
+
+            if (!await directoryClient.ExistsAsync(cancellationToken))
+                return;
+
+            await DeleteTree(directoryClient, cancellationToken);
+        }
+
+        private static async Task DeleteTree(
+            ShareDirectoryClient directory,
+            CancellationToken cancellationToken)
+        {
+            await foreach (var item in directory.GetFilesAndDirectoriesAsync(cancellationToken: cancellationToken))
+            {
+                if (item.IsDirectory)
+                {
+                    await DeleteTree(directory.GetSubdirectoryClient(item.Name), cancellationToken);
+                    await directory.DeleteSubdirectoryAsync(item.Name, cancellationToken);
+                }
+                else
+                {
+                    await directory.DeleteFileAsync(item.Name, cancellationToken);
+                }
+            }
+
+            await directory.DeleteAsync(cancellationToken);
+        }
+
         private static async IAsyncEnumerable<string> RecurseDirectory(
             ShareDirectoryClient directory,
             IPathFilter pathFilter, 
             [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            var directoryPath = directory.Path;
             await foreach (var item in directory.GetFilesAndDirectoriesAsync(cancellationToken: cancellationToken))
             {
-                var nextPath = $"{directoryPath}{(directoryPath == "" ? "" : "/")}{item.Name}";
-                var nextPathAction = pathFilter.DecideAction(nextPath);
+                var itemPath = GetNextPath(directory.Path, item);
 
-                if (item.IsDirectory && nextPathAction == PathAction.Recurse)
+                switch (pathFilter.DecideAction(itemPath))
                 {
-                    var subDirectory = directory.GetSubdirectoryClient(item.Name);
-
-                    await foreach (var subItem in RecurseDirectory(subDirectory, pathFilter, cancellationToken)) yield return subItem;
+                    case PathAction.Collect:
+                        yield return itemPath;
+                        break;
+                    case PathAction.Break:
+                        yield break;
+                    case PathAction.Recurse when item.IsDirectory:
+                        var subDirectory = directory.GetSubdirectoryClient(item.Name);
+                        await foreach (var subItem in RecurseDirectory(subDirectory, pathFilter, cancellationToken))
+                            yield return subItem;
+                        break;
                 }
-                else if (nextPathAction == PathAction.Collect)
-                    yield return nextPath;
             }
+        }
+
+        private static string GetNextPath(string directory, ShareFileItem file)
+        {
+            return $"{directory}{(directory == "" ? "" : "/")}{file.Name}";
         }
     }
 }
