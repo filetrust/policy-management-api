@@ -4,55 +4,447 @@ info:
   description: These are HTTP endpoints that query the policy store
   version: 0.1.9
 servers:
-  - url: http://localhost
+  - url: https://policymanagementapifunction20201016103513.azurewebsites.net
+    description: Azure Function
+  - url: http://localhost:32783
+    description: Local K8
 paths:
-  /v1/policy/draft:
+  /api/v1/policy:
     get:
-      summary: Get the draft policy
-      description: Searches the policy store for the draft policy
-  /v1/policy/current:
-    get:
-      summary: Get the current policy
-      description: Searches the policy store for the current policy
-  /v1/policy/history:
-    get:
-      summary: Get List of Historical Policies
-      description: Searches the policy store for all previous policies
-  /v1/policy:
-    get:
-      summary: Search Policy By Id
-      description: Searches the policy store for the policy that matches the provided ID
+      summary: Get a policy by ID
+      description: Searches the policy store, looking for a historical, draft or the current policy that matches the given ID.
       parameters:
         - in: query
           name: id
+          description: Unique Identifier for the policy.
+          example: a4484d16-7462-4997-bd84-c74655ac9cd2
+          required: true
           schema:
             type: string
+            title: ID
+      responses:
+        200:
+          description: OK - The request was successful
+          content:
+            "application/json":
+              schema:
+                $ref: '#/Models/Policy'
+        204:
+          description: No Content - No policy was found
+    delete:
+      summary: Deletes a policy by ID
+      description: Finds a policy by its ID from the store and deletes it. Current Policy cannot be deleted.
+      parameters:
+        - in: query
+          name: id
+          description: Unique Identifier for the policy. Current Policy ID will not be deleted.
+          example: a4484d16-7462-4997-bd84-c74655ac9cd2
+          schema:
+            type: string
+            title: ID
           required: true
-          description: "Unique identification of the Policy to Get"
-          example: "0140daa9-7da3-4445-964c-e87a2e70f909"
+      responses:
+        200:
+          description: OK - The request was successful
+  /api/v1/policy/draft:
+    get:
+      summary: Get the draft policy
+      description: Searches the policy store for the draft policy. If one is not found, it will return a policy based on the current policy.
+      responses:
+        200:
+          description: OK - The request was successful
+          content:
+            "application/json":
+              schema:
+                $ref: '#/Models/Policy'
+        204:
+          description: No Content - No policy was found
     put:
-      summary: Saves the provided policy as draft
-      description: Replaces the contents of the draft policy with the provided policy
+      summary: Updates the draft policy
+      description: Uploads the provided policy as the draft
       requestBody:
         content:
+          "application/json":
+            schema:
+              $ref: '#/Models/Policy'
+      responses:
+        200:
+          description: OK - The request was successful
+  /api/v1/policy/current:
+    get:
+      summary: Get the current policy
+      description: Searches the policy store for the current policy.
+      responses:
+        200:
+          description: OK - The request was successful
+          content:
+            "application/json":
+              schema:
+                $ref: '#/Models/Policy'
+        204:
+          description: No Content - No policy was found
+  /api/v1/policy/history:
+    get:
+      summary: Get a list of previous policies
+      description: Searches the policy store for previous policies.
+      responses:
+        200:
+          description: OK - The request was successful
+          content:
             "application/json":
               schema:
                 type: object
                 properties:
-                  Id:
-                    example: 0140daa9-7da3-4445-964c-e87a2e70f909
-    delete:
-      summary: Delete the provided policy
-      description: Searches for the policy matching the ID and deletes it from the store.
+                  PoliciesCount:
+                    type: number
+                    description: Number of policies contained in Policies
+                    example: 10
+                  Policies:
+                    type: array
+                    items:
+                      $ref: '#/Models/Policy'
+        204:
+          description: No Content - No policy was found
+  /api/v1/policy/publish:
+    put:
+      summary: Publishes a policy by ID
+      description: Searches the store for the associated policy, and moves it to the current policy. The current policy is treated as a historical policy afterwards. If no policy is found, nothing happens.
       parameters:
         - in: query
           name: id
+          description: Unique Identifier for the policy. Providing the current policy ID will not do anything.
+          example: a4484d16-7462-4997-bd84-c74655ac9cd2
           schema:
             type: string
+            title: ID
           required: true
-          description: "Unique identification of the Policy to delete"
-          example: "0140daa9-7da3-4445-964c-e87a2e70f909"
-  /v1/policy/publish:
-    post:
-      summary: Publish the draft policy
-      description: Searches the policy store for the draft policy and publishes it
+      responses:
+        200:
+          description: OK - The request was successful              
+  /api/v1/policy/distribute:
+    put:
+      summary: Distributes the current policy to the different clusters.
+      description: Gets the current policy and then iterates through each configured endpoint to send it too.
+      responses:
+        200:
+          description: OK - The request was successful         
+
+Models:
+  Policy:
+    type: object
+    description: >
+       Contains the Adaption policy, NCFS Policy and metadata surrounding the policy.
+    properties:
+      Id:
+        type: string
+        description: A Unique Identifier for the policy, generated when the draft is created.
+      PolicyType: 
+        type: integer
+        enum: [0, 1, 2]
+        description: >
+          Specifies the type of policy this its
+              <br/><br/>* `0` - Draft
+              <br/><br/>* `1` - Current 
+              <br/><br/>* `2` - Historic
+      Published:
+        type: string
+        description: Date the policy was published. Null if not published
+        example: "9999-12-31T23:59:59.9999999+00:00"
+      LastEdited:
+        type: string
+        description: Date the policy was last edited.
+        example: "9999-12-31T23:59:59.9999999+00:00"
+      Created:
+        type: string
+        description: Date the policy was first created.
+        example: "9999-12-31T23:59:59.9999999+00:00"
+      UpdatedBy:
+        type: string
+        description: User who updated this policy last.
+        example: "tom@bob.com"
+      NcfsPolicy:
+        type: object
+        description: Contains the settings used in the Non Compliant File Service
+        properties:
+          Routes:
+            type: array
+            items: 
+              type: object
+              properties: 
+                ApiUrl:
+                  type: string
+                  description: NCFS endpoint
+                IsDeleted:
+                  type: boolean
+                  description: Specifies whether this endpoint is in use.
+                IsValidated:
+                  type: boolean
+                  description: Specifies whether this endpoint is validated for use.
+      AdaptionPolicy:
+        type: object
+        description: Contains the settings used in the adaption process
+        properties:
+          ContentManagementFlags:
+            type: object
+            description: Content Management Flags used in the adaption process
+            properties: 
+              PdfContentManagement:
+                type: object
+                properties:
+                  Metadata:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for PDF Metadata, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  InternalHyperlinks:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for PDF Interal Hyperlinks, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  ExternalHyperlinks:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for PDF External Hyperlinks, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  EmbeddedFiles:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for files Embedded in PDF, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  EmbeddedImages:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for PDF Embedded Images, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  Javascript:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for PDF Javascript code, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  Acroform:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for PDF Acroforms, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  ActionsAll:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for PDF Actions, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+              ExcelContentManagement:
+                type: object
+                properties:
+                  Metadata:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Excel Metadata, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  InternalHyperlinks:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Excel Internal Hyperlinks, valid values:
+                      * `0` - Allow
+                      * `1` - Sanitise (Default)
+                      * `2` - Disallow
+                  ExternalHyperlinks:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Excel External Hyperlinks, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  EmbeddedFiles:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for files Embedded in Excel documents, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  EmbeddedImages:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for images Embedded in Excel documents, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  DynamicDataExchange:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Excel Dynamic Data, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  Macros:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Excel Macros, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  ReviewComments:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Excel Review Comments, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+              PowerPointContentManagement:
+                type: object
+                properties:
+                  Metadata:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Powerpoint Metadata, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  InternalHyperlinks:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Powerpoint Internal Hyperlinks, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  ExternalHyperlinks:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Powerpoint External Hyperlinks, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  EmbeddedFiles:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Powerpoint Embedded Files, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  EmbeddedImages:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Powerpoint Embedded Images, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  Macros:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Powerpoint Macros, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  ReviewComments:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Powerpoint Review Comments, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+              WordContentManagement:
+                type: object
+                properties:
+                  Metadata:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Word Documents Metadata, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  InternalHyperlinks:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Word Documents Internal Hyperlinks, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  ExternalHyperlinks:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Word Documents External Hyperlinks, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  EmbeddedFiles:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Word Documents Embedded Files, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  EmbeddedImages:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Word Documents Embedded Images, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  DynamicDataExchange:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Word Documents Dynamic Data, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  Macros:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Word Documents Macros, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow
+                  ReviewComments:
+                    type: integer
+                    enum: [1, 0, 2]
+                    description: >
+                      Specifies the content action for Word Documents Review Comments, valid values:
+                      <br/><br/>* `0` - Allow
+                      <br/><br/>* `1` - Sanitise (Default)
+                      <br/><br/>* `2` - Disallow

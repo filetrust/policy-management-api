@@ -3,6 +3,8 @@
     public interface IPolicyManagementApiConfiguration
     {
         string ShareName { get; }
-        string AzureStorageConnectionString { get; set; }
+        string AccountName { get; }
+        string AccountKey { get; }
+        string PolicyUpdateServiceEndpointCsv { get; }
     }
 }

@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Azure.Storage.Files.Shares;
+using Glasswall.PolicyManagement.Business.Configuration;
+using Glasswall.PolicyManagement.Business.Serialisation;
+using Glasswall.PolicyManagement.Business.Services;
+using Glasswall.PolicyManagement.Business.Store;
 using Glasswall.PolicyManagement.Common.Configuration;
 using Glasswall.PolicyManagement.Common.Configuration.Validation;
+using Glasswall.PolicyManagement.Common.Serialisation;
 using Glasswall.PolicyManagement.Common.Services;
 using Glasswall.PolicyManagement.Common.Store;
-using Glasswlal.PolicyManagement.Business.Configuration;
-using Glasswlal.PolicyManagement.Business.Services;
-using Glasswlal.PolicyManagement.Business.Store;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -56,8 +58,10 @@ namespace Glasswall.PolicyManagement.Api
             services.TryAddTransient<IConfigurationParser, EnvironmentVariableParser>();
             services.TryAddTransient<IDictionary<string, IConfigurationItemValidator>>(_ => new Dictionary<string, IConfigurationItemValidator>
             {
-                {nameof(IPolicyManagementApiConfiguration.AzureStorageConnectionString), new StringValidator(1)},
-                {nameof(IPolicyManagementApiConfiguration.ShareName), new StringValidator(1)}
+                {nameof(IPolicyManagementApiConfiguration.AccountName), new StringValidator(1)},
+                {nameof(IPolicyManagementApiConfiguration.AccountKey), new StringValidator(1)},
+                {nameof(IPolicyManagementApiConfiguration.ShareName), new StringValidator(1)},
+                {nameof(IPolicyManagementApiConfiguration.PolicyUpdateServiceEndpointCsv), new StringValidator(1)}
             });
             services.TryAddSingleton<IPolicyManagementApiConfiguration>(serviceProvider =>
             {
@@ -65,18 +69,15 @@ namespace Glasswall.PolicyManagement.Api
                 return configuration.Parse<PolicyManagementApiConfiguration>();
             });
 
+            services.TryAddTransient<IPolicyDistributer, PolicyDistributer>();
             services.TryAddTransient<IPolicyService, PolicyService>();
+            services.TryAddTransient<IJsonSerialiser, JsonSerialiser>();
+            services.TryAddTransient<IFileShare, AzureFileShare>();
 
             services.TryAddTransient(s =>
             {
                 var configuration = s.GetRequiredService<IPolicyManagementApiConfiguration>();
-                return new ShareServiceClient(configuration.AzureStorageConnectionString).GetShareClient(configuration.ShareName);
-            });
-
-            services.TryAddTransient<IEnumerable<IFileShare>>(s =>
-            {
-                var clients = s.GetRequiredService<IEnumerable<ShareClient>>();
-                return clients.Select(client => new AzureFileShare(client)).ToArray();
+                return new ShareServiceClient($"DefaultEndpointsProtocol=https;AccountName={configuration.AccountName};AccountKey={configuration.AccountKey};EndpointSuffix=core.windows.net").GetShareClient(configuration.ShareName);
             });
         }
 

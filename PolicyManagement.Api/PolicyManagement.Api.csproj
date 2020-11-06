@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\PolicyManagement.Business\PolicyManagement.Business.csproj" />
-    <ProjectReference Include="..\..\PolicyManagement.Common\PolicyManagement.Common.csproj" />
+    <ProjectReference Include="..\PolicyManagement.Business\PolicyManagement.Business.csproj" />
+    <ProjectReference Include="..\PolicyManagement.Common\PolicyManagement.Common.csproj" />
   </ItemGroup>
 
 
