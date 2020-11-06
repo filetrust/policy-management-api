@@ -4,10 +4,10 @@ info:
   description: These are HTTP endpoints that query the policy store
   version: 0.1.9
 servers:
-  - url: http://fd26967aef6a.ngrok.io
-    description: ngrok server
+  - url: https://policymanagementapifunction20201016103513.azurewebsites.net
+    description: Azure Function
   - url: http://localhost:32783
-    description: Local cluster
+    description: Local K8
 paths:
   /api/v1/policy:
     get:

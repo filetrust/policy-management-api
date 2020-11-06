@@ -7,15 +7,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolicyManagement.Api", "Pol
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{4FC86203-200B-4031-9B05-1414D097975D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolicyManagement.Common", "PolicyManagement.Common\PolicyManagement.Common.csproj", "{C014796F-D83D-4B74-B6CA-1DD7D8C7213D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolicyManagement.Common", "PolicyManagement.Common\PolicyManagement.Common.csproj", "{C014796F-D83D-4B74-B6CA-1DD7D8C7213D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolicyManagement.Business", "PolicyManagement.Business\PolicyManagement.Business.csproj", "{CB4DD72C-D1E6-4F2C-93DD-829F389AF441}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolicyManagement.Business", "PolicyManagement.Business\PolicyManagement.Business.csproj", "{CB4DD72C-D1E6-4F2C-93DD-829F389AF441}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{43F191F8-50E4-4933-9062-62DC68D7E0B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolicyManagement.Api.Tests", "PolicyManagement.Api.Tests\PolicyManagement.Api.Tests.csproj", "{D9B5C65E-540D-4562-A920-F4B277ADBC5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolicyManagement.Api.Tests", "PolicyManagement.Api.Tests\PolicyManagement.Api.Tests.csproj", "{D9B5C65E-540D-4562-A920-F4B277ADBC5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolicyManagement.Business.Tests", "PolicyManagement.Business.Tests\PolicyManagement.Business.Tests.csproj", "{12CC1316-F5E8-4C1C-B736-EA46AD00EB9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolicyManagement.Business.Tests", "PolicyManagement.Business.Tests\PolicyManagement.Business.Tests.csproj", "{12CC1316-F5E8-4C1C-B736-EA46AD00EB9E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolicyManagement.Api.Function", "PolicyManagement.Api.Function\PolicyManagement.Api.Function.csproj", "{60E7A19C-1C7C-4B90-A111-736698615DBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{12CC1316-F5E8-4C1C-B736-EA46AD00EB9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12CC1316-F5E8-4C1C-B736-EA46AD00EB9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12CC1316-F5E8-4C1C-B736-EA46AD00EB9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60E7A19C-1C7C-4B90-A111-736698615DBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60E7A19C-1C7C-4B90-A111-736698615DBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60E7A19C-1C7C-4B90-A111-736698615DBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60E7A19C-1C7C-4B90-A111-736698615DBB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

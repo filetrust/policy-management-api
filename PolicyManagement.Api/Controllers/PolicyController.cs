@@ -35,7 +35,6 @@ namespace Glasswall.PolicyManagement.Api.Controllers
             return Ok(policy);
         }
 
-
         [HttpPut("draft")]
         public async Task<IActionResult> SavePolicy([FromBody] PolicyModel policyModel, CancellationToken cancellationToken)
         {
