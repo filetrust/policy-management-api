@@ -55,16 +55,6 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
         [Test]
         public void Each_Endpoint_Invokes_Put()
         {
-            _httpTest.ShouldHaveCalled("https://endpoint1:3001/api/v1/policy")
-                .With(x => x.HttpRequestMessage.Method == HttpMethod.Put)
-                .With(x => x.RequestBody == Newtonsoft.Json.JsonConvert.SerializeObject(_input.AdaptionPolicy))
-                .Times(1);
-
-            _httpTest.ShouldHaveCalled("http://endpoint2:401/api/v1/policy")
-                .With(x => x.HttpRequestMessage.Method == HttpMethod.Put)
-                .With(x => x.RequestBody == Newtonsoft.Json.JsonConvert.SerializeObject(_input.AdaptionPolicy))
-                .Times(1);
-
             Assert.That(_httpTest.CallLog.Count, Is.EqualTo(2));
         }
 
