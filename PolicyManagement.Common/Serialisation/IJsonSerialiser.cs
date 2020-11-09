@@ -6,7 +6,7 @@ namespace Glasswall.PolicyManagement.Common.Serialisation
 {
     public interface IJsonSerialiser
     {
-        Task<TObject> Deserialize<TObject>(MemoryStream ms, CancellationToken ct);
-        Task<string> Serialise<TObject>(TObject model, CancellationToken cancellationToken);
+        Task<TObject> Deserialize<TObject>(MemoryStream input, CancellationToken ct);
+        Task<string> Serialize<TObject>(TObject input, CancellationToken cancellationToken);
     }
 }

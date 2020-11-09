@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Azure.Storage.Files.Shares;
 using Glasswall.PolicyManagement.Business.Configuration;
 using Glasswall.PolicyManagement.Business.Serialisation;

@@ -29,9 +29,6 @@ namespace Glasswall.PolicyManagement.Api.Controllers
         {
             var policy = await _policyService.GetDraftAsync(cancellationToken);
 
-            if (policy == null)
-                return NoContent();
-
             return Ok(policy);
         }
 
@@ -76,6 +73,9 @@ namespace Glasswall.PolicyManagement.Api.Controllers
         public async Task<IActionResult> GetPolicy([FromQuery]Guid id, CancellationToken cancellationToken)
         {
             var policy = await _policyService.GetPolicyByIdAsync(id, cancellationToken);
+
+            if (policy == null)
+                return NoContent();
 
             return Ok(policy);
         }

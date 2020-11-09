@@ -1,0 +1,23 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	
+	
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=d46e62cf_002D623c_002D423a_002D8082_002Dd99f87d410e8/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="WhenUsingStartup #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Or&gt;&#xD;
+    &lt;TestAncestor&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::D9B5C65E-540D-4562-A920-F4B277ADBC5A::.NETCoreApp,Version=v3.1::PolicyManagement.Api.Tests.StartupTests.WhenUsingStartup&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::D9B5C65E-540D-4562-A920-F4B277ADBC5A::.NETCoreApp,Version=v3.1::PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.Constructor.WhenConstructing&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::D9B5C65E-540D-4562-A920-F4B277ADBC5A::.NETCoreApp,Version=v3.1::PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.GetDraftPolicy.WhenPolicyExists&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::D9B5C65E-540D-4562-A920-F4B277ADBC5A::.NETCoreApp,Version=v3.1::PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.GetCurrent.WhenPolicyDoesNotExist&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::D9B5C65E-540D-4562-A920-F4B277ADBC5A::.NETCoreApp,Version=v3.1::PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.GetHistoric.WhenPolicyDoesNotExist&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::D9B5C65E-540D-4562-A920-F4B277ADBC5A::.NETCoreApp,Version=v3.1::PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.GetHistoric.WhenPolicyExists&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::D9B5C65E-540D-4562-A920-F4B277ADBC5A::.NETCoreApp,Version=v3.1::PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.SavePolicy.WhenExecutingAction&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::D9B5C65E-540D-4562-A920-F4B277ADBC5A::.NETCoreApp,Version=v3.1::PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.DeletePolicy.WhenExecutingAction&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::D9B5C65E-540D-4562-A920-F4B277ADBC5A::.NETCoreApp,Version=v3.1::PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.GetPolicy.WhenExecutingAction&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::D9B5C65E-540D-4562-A920-F4B277ADBC5A::.NETCoreApp,Version=v3.1::PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.GetPolicy.WhenPolicyDoesNotExist&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::D9B5C65E-540D-4562-A920-F4B277ADBC5A::.NETCoreApp,Version=v3.1::PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.GetPolicy.WhenPolicyExists&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;NUnit3x::D9B5C65E-540D-4562-A920-F4B277ADBC5A::.NETCoreApp,Version=v3.1::PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.GetCurrent.WhenPolicyExists&lt;/TestId&gt;&#xD;
+    &lt;/TestAncestor&gt;&#xD;
+    &lt;ProjectFolder&gt;D9B5C65E-540D-4562-A920-F4B277ADBC5A/d:Controllers/d:PolicyControllerTests&lt;/ProjectFolder&gt;&#xD;
+    &lt;Project Location="C:\Users\SebastianBirch\Documents\GitHub\policy-management-api\PolicyManagement.Business.Tests" Presentation="&amp;lt;Tests&amp;gt;\&amp;lt;PolicyManagement.Business.Tests&amp;gt;" /&gt;&#xD;
+  &lt;/Or&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
