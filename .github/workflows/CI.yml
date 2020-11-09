@@ -2,7 +2,7 @@ name: CI Build
 
 env:
   REPOSITORY: glasswallsolutions
-  IMAGE: policymanagementapi
+  IMAGE: policy-management-api
   TAG: main
 
 on:
