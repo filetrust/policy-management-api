@@ -3,11 +3,11 @@ name: CI Build
 env:
   REPOSITORY: glasswallsolutions
   IMAGE: policy-management-api
-  TAG: main
+  TAG: develop
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
  
 jobs:
   build-push-docker-image:
@@ -25,3 +25,16 @@ jobs:
       run: |
         docker build -t ${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ env.TAG }}-${GITHUB_SHA::7} -t ${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ env.TAG }}-latest .
         docker push ${{ env.REPOSITORY }}/${{ env.IMAGE }}
+
+  merge-to-main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@master
+      - name: Merge to main branch 🔃
+        uses: devmasx/merge-branch@v1.1.0
+        with:
+          type: now
+          target_branch: main
+        env:
+          GITHUB_TOKEN: ${{secrets.TOKEN_GITHUB}}  
