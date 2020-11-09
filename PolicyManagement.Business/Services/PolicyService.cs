@@ -45,7 +45,7 @@ namespace Glasswall.PolicyManagement.Business.Services
             if (draft != null) return draft;
             
             var current = await GetCurrentAsync(cancellationToken);
-            return current.ToDraft();
+            return current?.ToDraft();
         }
 
         public async Task<PolicyModel> GetCurrentAsync(CancellationToken cancellationToken)
@@ -132,7 +132,7 @@ namespace Glasswall.PolicyManagement.Business.Services
 
         private async Task InternalUploadPolicyAsync(string fullPolicyJsonPath, PolicyModel policyModel, CancellationToken cancellationToken)
         {
-            var jsonFile = await _jsonSerialiser.Serialise(policyModel, cancellationToken);
+            var jsonFile = await _jsonSerialiser.Serialize(policyModel, cancellationToken);
             var bytes = Encoding.UTF8.GetBytes(jsonFile);
             await _fileShare.UploadAsync(fullPolicyJsonPath, bytes, cancellationToken);
         }

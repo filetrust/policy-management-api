@@ -54,23 +54,19 @@ namespace Glasswall.PolicyManagement.Business.Store
         private async Task InternalUploadAsync(string path, byte[] bytes, CancellationToken cancellationToken)
         {
             var pathParts = path.Split('/');
-
-            if (pathParts.Length > 1)
+            var curDir = _shareClient.GetRootDirectoryClient();
+            for (var i = 0; i < pathParts.Length - 1; i++)
             {
-                var curDir = _shareClient.GetRootDirectoryClient();
-                for (var i = 0; i < pathParts.Length - 1; i++)
-                {
-                    curDir = curDir.GetSubdirectoryClient(pathParts[i]);
-                    await curDir.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
-                }
-
-                var fileClient = curDir.GetFileClient(pathParts.Last());
-                await fileClient.DeleteIfExistsAsync(cancellationToken: cancellationToken);
-                using var ms = new MemoryStream(bytes);
-
-                await fileClient.CreateAsync(ms.Length, cancellationToken: cancellationToken);
-                await fileClient.UploadAsync(ms, cancellationToken: cancellationToken);
+                curDir = curDir.GetSubdirectoryClient(pathParts[i]);
+                await curDir.CreateIfNotExistsAsync(cancellationToken: cancellationToken);
             }
+
+            var fileClient = curDir.GetFileClient(pathParts.Last());
+            await fileClient.DeleteIfExistsAsync(cancellationToken: cancellationToken);
+            using var ms = new MemoryStream(bytes);
+
+            await fileClient.CreateAsync(ms.Length, cancellationToken: cancellationToken);
+            await fileClient.UploadAsync(ms, cancellationToken: cancellationToken);
         }
 
         private async Task<MemoryStream> InternalDownloadAsync(string path, CancellationToken cancellationToken)
@@ -141,17 +137,12 @@ namespace Glasswall.PolicyManagement.Business.Store
             await foreach (var item in directory.GetFilesAndDirectoriesAsync(cancellationToken: cancellationToken))
             {
                 if (item.IsDirectory)
-                {
                     await DeleteTree(directory.GetSubdirectoryClient(item.Name), cancellationToken);
-                    await directory.DeleteSubdirectoryAsync(item.Name, cancellationToken);
-                }
                 else
-                {
                     await directory.DeleteFileAsync(item.Name, cancellationToken);
-                }
             }
 
-            await directory.DeleteAsync(cancellationToken);
+            await directory.DeleteIfExistsAsync(cancellationToken);
         }
 
         private static async IAsyncEnumerable<string> RecurseDirectory(

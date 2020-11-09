@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,14 +9,16 @@ namespace Glasswall.PolicyManagement.Business.Serialisation
 {
     public class JsonSerialiser : IJsonSerialiser
     {
-        public Task<TObject> Deserialize<TObject>(MemoryStream ms, CancellationToken ct)
+        public Task<TObject> Deserialize<TObject>(MemoryStream input, CancellationToken ct)
         {
-            return Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<TObject>(Encoding.UTF8.GetString(ms.ToArray())));
+            if (input == null) throw new ArgumentNullException(nameof(input));
+            return Task.FromResult(Newtonsoft.Json.JsonConvert.DeserializeObject<TObject>(Encoding.UTF8.GetString(input.ToArray())));
         }
 
-        public Task<string> Serialise<TObject>(TObject model, CancellationToken cancellationToken)
+        public Task<string> Serialize<TObject>(TObject input, CancellationToken cancellationToken)
         {
-            return Task.FromResult(Newtonsoft.Json.JsonConvert.SerializeObject(model));
+            if (input == null) throw new ArgumentNullException(nameof(input));
+            return Task.FromResult(Newtonsoft.Json.JsonConvert.SerializeObject(input));
         }
     }
 }

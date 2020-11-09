@@ -31,6 +31,8 @@ namespace Glasswall.PolicyManagement.Business.Services
 
         private async Task InternalDistributeAsync(PolicyModel policy, CancellationToken cancellationToken)
         {
+            if (policy == null) throw new ArgumentNullException(nameof(policy));
+
             foreach (var endpoint in _policyManagementApiConfiguration.PolicyUpdateServiceEndpointCsv.Split(','))
             {
                 try
