@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Azure.Storage.Files.Shares;
+using Flurl.Http;
 using Glasswall.PolicyManagement.Business.Configuration;
 using Glasswall.PolicyManagement.Business.Serialisation;
 using Glasswall.PolicyManagement.Business.Services;
@@ -60,7 +61,9 @@ namespace Glasswall.PolicyManagement.Api
                 {nameof(IPolicyManagementApiConfiguration.AccountName), new StringValidator(1)},
                 {nameof(IPolicyManagementApiConfiguration.AccountKey), new StringValidator(1)},
                 {nameof(IPolicyManagementApiConfiguration.ShareName), new StringValidator(1)},
-                {nameof(IPolicyManagementApiConfiguration.PolicyUpdateServiceEndpointCsv), new StringValidator(1)}
+                {nameof(IPolicyManagementApiConfiguration.PolicyUpdateServiceEndpointCsv), new StringValidator(1)},
+                {nameof(IPolicyManagementApiConfiguration.TokenUsername), new StringValidator(1)},
+                {nameof(IPolicyManagementApiConfiguration.TokenPassword), new StringValidator(1)}
             });
             services.TryAddSingleton<IPolicyManagementApiConfiguration>(serviceProvider =>
             {

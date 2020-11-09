@@ -39,7 +39,17 @@ namespace Glasswall.PolicyManagement.Business.Services
                 {
                     _logger.LogInformation($"Signalling Policy Update to '{endpoint}' starting");
                     
-                    await $"{endpoint}/api/v1/policy".PutJsonAsync(policy.AdaptionPolicy, cancellationToken);
+                    FlurlHttp.ConfigureClient(endpoint, cli =>
+                        cli.Settings.HttpClientFactory = new UntrustedCertClientFactory());
+
+                    var tokenResponse = await $"{endpoint}/api/v1/auth/token".WithBasicAuth(
+                        _policyManagementApiConfiguration.TokenUsername,
+                        _policyManagementApiConfiguration.TokenPassword
+                    ).GetAsync(cancellationToken);
+                    
+                    var token = await tokenResponse.GetStringAsync();
+
+                    await $"{endpoint}/api/v1/policy".WithOAuthBearerToken(token).PutJsonAsync(policy.AdaptionPolicy, cancellationToken);
 
                     _logger.LogInformation($"Signalling Policy Update to '{endpoint}' complete");
                 }

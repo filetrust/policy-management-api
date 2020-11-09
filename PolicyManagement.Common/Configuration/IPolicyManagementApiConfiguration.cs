@@ -6,5 +6,7 @@
         string AccountName { get; }
         string AccountKey { get; }
         string PolicyUpdateServiceEndpointCsv { get; }
+        string TokenUsername { get; }
+        string TokenPassword { get; }
     }
 }

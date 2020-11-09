@@ -37,6 +37,11 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
 
             _httpTest = new HttpTest();
 
+            _httpTest.RespondWith("body");
+            _httpTest.RespondWith("body");
+            _httpTest.RespondWith("body");
+            _httpTest.RespondWith("body");
+
             await ClassInTest.Distribute(_input = new PolicyModel { AdaptionPolicy = new AdaptionPolicy
             {
                 ContentManagementFlags = new ContentFlags()
@@ -63,7 +68,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
                 .With(x => x.RequestBody == Newtonsoft.Json.JsonConvert.SerializeObject(_input.AdaptionPolicy))
                 .Times(1);
 
-            Assert.That(_httpTest.CallLog.Count, Is.EqualTo(2));
+            Assert.That(_httpTest.CallLog.Count, Is.EqualTo(4));
         }
 
         [Test]
