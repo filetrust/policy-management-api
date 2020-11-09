@@ -1,0 +1,27 @@
+name: CI Build
+
+env:
+  REPOSITORY: glasswallsolutions
+  IMAGE: policy-management-api
+  TAG: main
+
+on:
+  push:
+    branches: [main]
+ 
+jobs:
+  build-push-docker-image:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+    - name: Docker Login
+      uses: docker/login-action@v1.6.0
+      with:
+        username: icapserviceaccount
+        password: ${{ secrets.ICAPDOCKERSECRET }}
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t ${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ env.TAG }}-${GITHUB_SHA::7} -t ${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ env.TAG }}-latest .
+        docker push ${{ env.REPOSITORY }}/${{ env.IMAGE }}
