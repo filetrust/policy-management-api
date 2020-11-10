@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Glasswall.PolicyManagement.Common.Configuration;
 using Glasswall.PolicyManagement.Common.Models;
+using Glasswall.PolicyManagement.Common.Models.Adaption.ContentFlags;
+using Glasswall.PolicyManagement.Common.Models.Ncfs;
 using Glasswall.PolicyManagement.Common.Services;
 using Microsoft.Extensions.Logging;
 
@@ -49,7 +52,14 @@ namespace Glasswall.PolicyManagement.Business.Services
                     
                     var token = await tokenResponse.GetStringAsync();
 
-                    await $"{endpoint}/api/v1/policy".WithOAuthBearerToken(token).PutJsonAsync(policy.AdaptionPolicy, cancellationToken);
+                    await $"{endpoint}/api/v1/policy".WithOAuthBearerToken(token).PutJsonAsync(new
+                    {
+                        PolicyId = policy.Id,
+                        ContentManagementFlags = policy.AdaptionPolicy?.ContentManagementFlags,
+                        UnprocessableFileTypeAction = policy.NcfsPolicy?.Options?.UnProcessableFileTypes,
+                        GlasswallBlockedFilesAction = policy.NcfsPolicy?.Options?.GlasswallBlockedFiles,
+                        NcfsRoutingUrl = policy.NcfsPolicy?.Routes?.FirstOrDefault()?.ApiUrl
+                    }, cancellationToken);
 
                     _logger.LogInformation($"Signalling Policy Update to '{endpoint}' complete");
                 }

@@ -1,4 +1,6 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Flurl.Http.Testing;
@@ -7,6 +9,8 @@ using Glasswall.PolicyManagement.Common.Configuration;
 using Glasswall.PolicyManagement.Common.Models;
 using Glasswall.PolicyManagement.Common.Models.Adaption;
 using Glasswall.PolicyManagement.Common.Models.Adaption.ContentFlags;
+using Glasswall.PolicyManagement.Common.Models.Enums;
+using Glasswall.PolicyManagement.Common.Models.Ncfs;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -42,10 +46,23 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
             _httpTest.RespondWith("body");
             _httpTest.RespondWith("body");
 
-            await ClassInTest.Distribute(_input = new PolicyModel { AdaptionPolicy = new AdaptionPolicy
+            await ClassInTest.Distribute(_input = new PolicyModel
             {
-                ContentManagementFlags = new ContentFlags()
-            }}, _token = new CancellationToken());
+                Id = Guid.NewGuid(),
+                AdaptionPolicy = new AdaptionPolicy { ContentManagementFlags = new ContentFlags() },
+                NcfsPolicy = new NcfsPolicy
+                {
+                    Options = new NcfsOptions
+                    {
+                        GlasswallBlockedFiles = NcfsOption.Block,
+                        UnProcessableFileTypes = NcfsOption.Refer
+                    },
+                    Routes = new[]
+                    {
+                        new NcfsRoute(), 
+                    }
+                }
+            }, _token = new CancellationToken());
 
         }
 
@@ -60,13 +77,25 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
         {
             _httpTest.ShouldHaveCalled("https://endpoint1:3001/api/v1/policy")
                 .With(x => x.HttpRequestMessage.Method == HttpMethod.Put)
-                .With(x => x.RequestBody == Newtonsoft.Json.JsonConvert.SerializeObject(_input.AdaptionPolicy))
-                .Times(1);
+                .With(x => x.RequestBody == Newtonsoft.Json.JsonConvert.SerializeObject(new
+                {
+                    PolicyId = _input.Id,
+                    ContentManagementFlags = _input.AdaptionPolicy?.ContentManagementFlags,
+                    UnprocessableFileTypeAction = _input.NcfsPolicy?.Options?.UnProcessableFileTypes,
+                    GlasswallBlockedFilesAction = _input.NcfsPolicy?.Options?.GlasswallBlockedFiles,
+                    NcfsRoutingUrl = _input.NcfsPolicy?.Routes?.FirstOrDefault()?.ApiUrl
+                })).Times(1);
 
             _httpTest.ShouldHaveCalled("http://endpoint2:401/api/v1/policy")
                 .With(x => x.HttpRequestMessage.Method == HttpMethod.Put)
-                .With(x => x.RequestBody == Newtonsoft.Json.JsonConvert.SerializeObject(_input.AdaptionPolicy))
-                .Times(1);
+                .With(x => x.RequestBody == Newtonsoft.Json.JsonConvert.SerializeObject(new
+                {
+                    PolicyId = _input.Id,
+                    ContentManagementFlags = _input.AdaptionPolicy?.ContentManagementFlags,
+                    UnprocessableFileTypeAction = _input.NcfsPolicy?.Options?.UnProcessableFileTypes,
+                    GlasswallBlockedFilesAction = _input.NcfsPolicy?.Options?.GlasswallBlockedFiles,
+                    NcfsRoutingUrl = _input.NcfsPolicy?.Routes?.FirstOrDefault()?.ApiUrl
+                })).Times(1);
 
             Assert.That(_httpTest.CallLog.Count, Is.EqualTo(4));
         }
