@@ -58,7 +58,8 @@ namespace Glasswall.PolicyManagement.Business.Services
                         ContentManagementFlags = policy.AdaptionPolicy?.ContentManagementFlags,
                         UnprocessableFileTypeAction = policy.NcfsPolicy?.Options?.UnProcessableFileTypes,
                         GlasswallBlockedFilesAction = policy.NcfsPolicy?.Options?.GlasswallBlockedFiles,
-                        NcfsRoutingUrl = policy.NcfsPolicy?.Routes?.FirstOrDefault()?.ApiUrl
+                        NcfsRoutingUrl = policy.NcfsPolicy?.Routes?.FirstOrDefault()?.ApiUrl,
+                        ErrorReportTemplate = policy.AdaptionPolicy?.ErrorReportTemplate
                     }, cancellationToken);
 
                     _logger.LogInformation($"Signalling Policy Update to '{endpoint}' complete");
