@@ -184,6 +184,9 @@ Models:
         type: object
         description: Contains the settings used in the adaption process
         properties:
+          ErrorReportTemplate:
+            type: string
+            example: For more information contact your system administrator
           ContentManagementFlags:
             type: object
             description: Content Management Flags used in the adaption process
