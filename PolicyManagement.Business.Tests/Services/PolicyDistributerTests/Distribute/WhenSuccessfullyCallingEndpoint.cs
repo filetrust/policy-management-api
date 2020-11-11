@@ -49,7 +49,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
             await ClassInTest.Distribute(_input = new PolicyModel
             {
                 Id = Guid.NewGuid(),
-                AdaptionPolicy = new AdaptionPolicy { ContentManagementFlags = new ContentFlags() },
+                AdaptionPolicy = new AdaptionPolicy { ContentManagementFlags = new ContentFlags(), ErrorReportTemplate = "This banana is for you"},
                 NcfsPolicy = new NcfsPolicy
                 {
                     Options = new NcfsOptions
@@ -83,7 +83,8 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
                     ContentManagementFlags = _input.AdaptionPolicy?.ContentManagementFlags,
                     UnprocessableFileTypeAction = _input.NcfsPolicy?.Options?.UnProcessableFileTypes,
                     GlasswallBlockedFilesAction = _input.NcfsPolicy?.Options?.GlasswallBlockedFiles,
-                    NcfsRoutingUrl = _input.NcfsPolicy?.Routes?.FirstOrDefault()?.ApiUrl
+                    NcfsRoutingUrl = _input.NcfsPolicy?.Routes?.FirstOrDefault()?.ApiUrl,
+                    ErrorReportTemplate = _input.AdaptionPolicy?.ErrorReportTemplate
                 })).Times(1);
 
             _httpTest.ShouldHaveCalled("http://endpoint2:401/api/v1/policy")
@@ -94,7 +95,8 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
                     ContentManagementFlags = _input.AdaptionPolicy?.ContentManagementFlags,
                     UnprocessableFileTypeAction = _input.NcfsPolicy?.Options?.UnProcessableFileTypes,
                     GlasswallBlockedFilesAction = _input.NcfsPolicy?.Options?.GlasswallBlockedFiles,
-                    NcfsRoutingUrl = _input.NcfsPolicy?.Routes?.FirstOrDefault()?.ApiUrl
+                    NcfsRoutingUrl = _input.NcfsPolicy?.Routes?.FirstOrDefault()?.ApiUrl,
+                    ErrorReportTemplate = _input.AdaptionPolicy?.ErrorReportTemplate
                 })).Times(1);
 
             Assert.That(_httpTest.CallLog.Count, Is.EqualTo(4));
