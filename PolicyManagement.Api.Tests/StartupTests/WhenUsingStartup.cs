@@ -34,6 +34,7 @@ namespace PolicyManagement.Api.Tests.StartupTests
             Environment.SetEnvironmentVariable(nameof(IPolicyManagementApiConfiguration.AccountName), "nameyname");
             Environment.SetEnvironmentVariable(nameof(IPolicyManagementApiConfiguration.TokenUsername), "keymckey");
             Environment.SetEnvironmentVariable(nameof(IPolicyManagementApiConfiguration.TokenPassword), "nameyname");
+            Environment.SetEnvironmentVariable(nameof(IPolicyManagementApiConfiguration.NcfsPolicyUpdateServiceEndpointCsv), "nameyname");
 
             var services = new ServiceCollection();
             
@@ -64,6 +65,7 @@ namespace PolicyManagement.Api.Tests.StartupTests
             Environment.SetEnvironmentVariable(nameof(IPolicyManagementApiConfiguration.AccountName), "nameyname");
             Environment.SetEnvironmentVariable(nameof(IPolicyManagementApiConfiguration.TokenUsername), "keymckey");
             Environment.SetEnvironmentVariable(nameof(IPolicyManagementApiConfiguration.TokenPassword), "nameyname");
+            Environment.SetEnvironmentVariable(nameof(IPolicyManagementApiConfiguration.NcfsPolicyUpdateServiceEndpointCsv), "nameyname");
 
             var config = services.BuildServiceProvider().GetRequiredService<IPolicyManagementApiConfiguration>();
 

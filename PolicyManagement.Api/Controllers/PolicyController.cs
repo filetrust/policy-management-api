@@ -88,12 +88,22 @@ namespace Glasswall.PolicyManagement.Api.Controllers
             return Ok();
         }
 
-        [HttpPut("current/distribute")]
+        [HttpPut("current/distribute-adaption")]
         public async Task<IActionResult> DistributeCurrent(CancellationToken cancellationToken)
         {
             var currentPolicy = await _policyService.GetCurrentAsync(cancellationToken);
 
-            await _policyDistributer.Distribute(currentPolicy, cancellationToken);
+            await _policyDistributer.DistributeAdaptionPolicy(currentPolicy, cancellationToken);
+
+            return Ok();
+        }
+
+        [HttpPut("current/distribute-ncfs")]
+        public async Task<IActionResult> DistributeNcfsPolicy(CancellationToken cancellationToken)
+        {
+            var currentPolicy = await _policyService.GetCurrentAsync(cancellationToken);
+
+            await _policyDistributer.DistributeNcfsPolicy(currentPolicy, cancellationToken);
 
             return Ok();
         }

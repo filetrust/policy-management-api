@@ -11,7 +11,7 @@ using Moq;
 using NUnit.Framework;
 using TestCommon;
 
-namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distribute
+namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.DistributeNcfsPolicy
 {
     [TestFixture]
     public class WhenNoEndpointsConfigured : UnitTestBase<PolicyDistributer>
@@ -31,14 +31,14 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
 
             ClassInTest = new PolicyDistributer(_logger.Object, _configuration.Object);
 
-            _configuration.Setup(s => s.PolicyUpdateServiceEndpointCsv)
+            _configuration.Setup(s => s.NcfsPolicyUpdateServiceEndpointCsv)
                 .Returns("");
 
             _httpTest = new HttpTest();
 
-            await ClassInTest.Distribute(_input = new PolicyModel { AdaptionPolicy = new AdaptionPolicy
+            await ClassInTest.DistributeNcfsPolicy(_input = new PolicyModel { AdaptionPolicy = new AdaptionPolicy
             {
-                ContentManagementFlags = new ContentFlags()
+                ContentManagementFlags = new ContentManagementFlags()
             }}, _token = new CancellationToken());
 
         }

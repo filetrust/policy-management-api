@@ -8,5 +8,6 @@
         string PolicyUpdateServiceEndpointCsv { get; }
         string TokenUsername { get; }
         string TokenPassword { get; }
+        string NcfsPolicyUpdateServiceEndpointCsv { get; }
     }
 }
