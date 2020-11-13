@@ -30,7 +30,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
         public void Exception_Raised()
         {
             Assert.That(async () =>
-            await ClassInTest.Distribute(null, new CancellationToken()), ThrowsArgumentNullException("policy"));
+            await ClassInTest.DistributeAdaptionPolicy(null, new CancellationToken()), ThrowsArgumentNullException("policy"));
         }
     }
 }

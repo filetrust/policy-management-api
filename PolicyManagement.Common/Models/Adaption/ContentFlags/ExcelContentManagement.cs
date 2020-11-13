@@ -2,8 +2,9 @@
 
 namespace Glasswall.PolicyManagement.Common.Models.Adaption.ContentFlags
 {
-    public class PowerPointContentFlags
+    public class ExcelContentManagement
     {
+        public ContentManagementFlagAction DynamicDataExchange { get; set; }
         public ContentManagementFlagAction EmbeddedFiles { get; set; }
         public ContentManagementFlagAction EmbeddedImages { get; set; }
         public ContentManagementFlagAction ExternalHyperlinks { get; set; }

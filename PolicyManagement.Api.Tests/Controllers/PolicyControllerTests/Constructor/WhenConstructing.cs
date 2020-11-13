@@ -40,7 +40,8 @@ namespace PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.Construct
         [TestCase(nameof(PolicyController.GetHistoricPolicies), typeof(HttpGetAttribute), "history")]
         [TestCase(nameof(PolicyController.GetPolicy), typeof(HttpGetAttribute), null)]
         [TestCase(nameof(PolicyController.PublishDraft), typeof(HttpPutAttribute), "publish")]
-        [TestCase(nameof(PolicyController.DistributeCurrent), typeof(HttpPutAttribute), "current/distribute")]
+        [TestCase(nameof(PolicyController.DistributeCurrent), typeof(HttpPutAttribute), "current/distribute-adaption")]
+        [TestCase(nameof(PolicyController.DistributeNcfsPolicy), typeof(HttpPutAttribute), "current/distribute-ncfs")]
         [TestCase(nameof(PolicyController.DeletePolicy), typeof(HttpDeleteAttribute), null)]
         public void Constructed_Class_Method_Has_Correct_Attributes(string method, Type verb, string expectedRoute)
         {

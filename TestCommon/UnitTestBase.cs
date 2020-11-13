@@ -1,9 +1,11 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 
 namespace TestCommon
 {
+    [ExcludeFromCodeCoverage]
     public abstract class UnitTestBase<TClassInTest> where TClassInTest : class
     {
         protected TClassInTest ClassInTest;

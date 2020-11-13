@@ -2,8 +2,13 @@
 {
     public class NcfsPolicy
     {
-        public NcfsRoute[] Routes { get; set; }
+        public NcfsDecision NcfsDecision { get; set; }
+    }
 
-        public NcfsOptions Options { get; set; }
+    public enum NcfsDecision
+    {
+        Relay,
+        Replace,
+        Block
     }
 }

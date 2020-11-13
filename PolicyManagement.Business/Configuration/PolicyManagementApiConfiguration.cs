@@ -10,5 +10,6 @@ namespace Glasswall.PolicyManagement.Business.Configuration
         public string PolicyUpdateServiceEndpointCsv { get; set; }
         public string TokenUsername { get; set;}
         public string TokenPassword { get; set; }
+        public string NcfsPolicyUpdateServiceEndpointCsv { get; set; }
     }
 }
