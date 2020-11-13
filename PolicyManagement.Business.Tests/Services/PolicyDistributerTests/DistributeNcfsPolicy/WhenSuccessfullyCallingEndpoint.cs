@@ -1,22 +1,17 @@
-﻿using System;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Flurl.Http.Testing;
 using Glasswall.PolicyManagement.Business.Services;
 using Glasswall.PolicyManagement.Common.Configuration;
 using Glasswall.PolicyManagement.Common.Models;
-using Glasswall.PolicyManagement.Common.Models.Adaption;
-using Glasswall.PolicyManagement.Common.Models.Adaption.ContentFlags;
-using Glasswall.PolicyManagement.Common.Models.Enums;
 using Glasswall.PolicyManagement.Common.Models.Ncfs;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using TestCommon;
 
-namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distribute
+namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.DistributeNcfsPolicy
 {
     [TestFixture]
     public class WhenSuccessfullyCallingEndpoint : UnitTestBase<PolicyDistributer>
@@ -36,7 +31,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
 
             ClassInTest = new PolicyDistributer(_logger.Object, _configuration.Object);
 
-            _configuration.Setup(s => s.PolicyUpdateServiceEndpointCsv)
+            _configuration.Setup(s => s.NcfsPolicyUpdateServiceEndpointCsv)
                 .Returns("https://endpoint1:3001,http://endpoint2:401");
 
             _httpTest = new HttpTest();
@@ -46,24 +41,13 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
             _httpTest.RespondWith("body");
             _httpTest.RespondWith("body");
 
-            await ClassInTest.Distribute(_input = new PolicyModel
+            await ClassInTest.DistributeNcfsPolicy(_input = new PolicyModel
             {
-                Id = Guid.NewGuid(),
-                AdaptionPolicy = new AdaptionPolicy { ContentManagementFlags = new ContentFlags(), ErrorReportTemplate = "This banana is for you"},
                 NcfsPolicy = new NcfsPolicy
                 {
-                    Options = new NcfsOptions
-                    {
-                        GlasswallBlockedFiles = NcfsOption.Block,
-                        UnProcessableFileTypes = NcfsOption.Refer
-                    },
-                    Routes = new[]
-                    {
-                        new NcfsRoute(), 
-                    }
+                    NcfsDecision = NcfsDecision.Relay
                 }
             }, _token = new CancellationToken());
-
         }
 
         [OneTimeTearDown]
@@ -79,24 +63,14 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
                 .With(x => x.HttpRequestMessage.Method == HttpMethod.Put)
                 .With(x => x.RequestBody == Newtonsoft.Json.JsonConvert.SerializeObject(new
                 {
-                    PolicyId = _input.Id,
-                    ContentManagementFlags = _input.AdaptionPolicy?.ContentManagementFlags,
-                    UnprocessableFileTypeAction = _input.NcfsPolicy?.Options?.UnProcessableFileTypes,
-                    GlasswallBlockedFilesAction = _input.NcfsPolicy?.Options?.GlasswallBlockedFiles,
-                    NcfsRoutingUrl = _input.NcfsPolicy?.Routes?.FirstOrDefault()?.ApiUrl,
-                    ErrorReportTemplate = _input.AdaptionPolicy?.ErrorReportTemplate
+                    NcfsDecision = NcfsDecision.Relay
                 })).Times(1);
 
             _httpTest.ShouldHaveCalled("http://endpoint2:401/api/v1/policy")
                 .With(x => x.HttpRequestMessage.Method == HttpMethod.Put)
                 .With(x => x.RequestBody == Newtonsoft.Json.JsonConvert.SerializeObject(new
                 {
-                    PolicyId = _input.Id,
-                    ContentManagementFlags = _input.AdaptionPolicy?.ContentManagementFlags,
-                    UnprocessableFileTypeAction = _input.NcfsPolicy?.Options?.UnProcessableFileTypes,
-                    GlasswallBlockedFilesAction = _input.NcfsPolicy?.Options?.GlasswallBlockedFiles,
-                    NcfsRoutingUrl = _input.NcfsPolicy?.Routes?.FirstOrDefault()?.ApiUrl,
-                    ErrorReportTemplate = _input.AdaptionPolicy?.ErrorReportTemplate
+                    NcfsDecision = NcfsDecision.Relay
                 })).Times(1);
 
             Assert.That(_httpTest.CallLog.Count, Is.EqualTo(4));

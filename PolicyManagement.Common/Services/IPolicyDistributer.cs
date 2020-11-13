@@ -6,6 +6,7 @@ namespace Glasswall.PolicyManagement.Common.Services
 {
     public interface IPolicyDistributer
     {
-        Task Distribute(PolicyModel policy, CancellationToken cancellationToken);
+        Task DistributeAdaptionPolicy(PolicyModel policy, CancellationToken cancellationToken);
+        Task DistributeNcfsPolicy(PolicyModel policy, CancellationToken cancellationToken);
     }
 }

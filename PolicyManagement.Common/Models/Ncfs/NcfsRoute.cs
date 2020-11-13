@@ -2,7 +2,7 @@
 {
     public class NcfsRoute
     {
-        public string ApiUrl { get; set; }
+        public string NcfsRoutingUrl { get; set; }
 
         public bool IsDeleted { get; set; }
         

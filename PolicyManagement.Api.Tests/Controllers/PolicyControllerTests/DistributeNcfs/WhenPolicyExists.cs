@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 
-namespace PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.DistributeCurrent
+namespace PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.DistributeNcfs
 {
     [TestFixture]
     public class WhenPolicyExists : PolicyControllerTestBase
@@ -23,7 +23,7 @@ namespace PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.Distribut
             Service.Setup(s => s.GetCurrentAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_expectedPolicy);
 
-            _output = await ClassInTest.DistributeCurrent(MockCancellationToken);
+            _output = await ClassInTest.DistributeNcfsPolicy(MockCancellationToken);
         }
 
         [Test]
@@ -38,12 +38,11 @@ namespace PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.Distribut
             Service.Verify(s => s.GetCurrentAsync(It.Is<CancellationToken>(x => x == MockCancellationToken)), Times.Once);
             Service.VerifyNoOtherCalls();
         }
-
-
+        
         [Test]
         public void Policy_Is_Distributed()
         {
-            Distributer.Verify(x => x.DistributeAdaptionPolicy(It.Is<PolicyModel>(f => f == _expectedPolicy), It.Is<CancellationToken>(f => f == MockCancellationToken)));
+            Distributer.Verify(x => x.DistributeNcfsPolicy(It.Is<PolicyModel>(f => f == _expectedPolicy), It.Is<CancellationToken>(f => f == MockCancellationToken)));
             Distributer.VerifyNoOtherCalls();
         }
     }
