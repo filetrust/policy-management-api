@@ -6,7 +6,7 @@ info:
 servers:
   - url: https://policymanagementapifunction20201016103513.azurewebsites.net
     description: Azure Function
-  - url: http://localhost:32783
+  - url: http://localhost:32769
     description: Local K8
 paths:
   /api/v1/policy:
@@ -121,13 +121,20 @@ paths:
       responses:
         200:
           description: OK - The request was successful              
-  /api/v1/policy/distribute:
+  /api/v1/policy/current/distribute-adaption:
     put:
-      summary: Distributes the current policy to the different clusters.
+      summary: Distributes the current policy to the different Adaption clusters.
       description: Gets the current policy and then iterates through each configured endpoint to send it too.
       responses:
         200:
-          description: OK - The request was successful         
+          description: OK - The request was successful
+  /api/v1/policy/current/distribute-ncfs:
+    put:
+      summary: Distributes the current policy to the different NCFS clusters.
+      description: Gets the current policy and then iterates through each configured endpoint to send it too.
+      responses:
+        200:
+          description: OK - The request was successful               
 
 Models:
   Policy:
@@ -166,24 +173,52 @@ Models:
         type: object
         description: Contains the settings used in the Non Compliant File Service
         properties:
-          Routes:
-            type: array
-            items: 
-              type: object
-              properties: 
-                ApiUrl:
-                  type: string
-                  description: NCFS endpoint
-                IsDeleted:
-                  type: boolean
-                  description: Specifies whether this endpoint is in use.
-                IsValidated:
-                  type: boolean
-                  description: Specifies whether this endpoint is validated for use.
+          NcfsDecision:
+            type: integer
+            enum: [1, 0, 2]
+            description: >
+              Specifies the action to take for files that reach the NCFS reference service
+              <br/><br/>* `1` - Relay
+              <br/><br/>* `2` - Replace
+              <br/><br/>* `3` - Block          
       AdaptionPolicy:
         type: object
         description: Contains the settings used in the adaption process
         properties:
+          NcfsActions:
+            type: object
+            properties: 
+              UnprocessableFileTypeAction:
+                type: integer
+                enum: [1, 0, 2]
+                description: >
+                  Specifies the action to take for unprocessable files
+                  <br/><br/>* `1` - Relay
+                  <br/><br/>* `2` - Block
+                  <br/><br/>* `3` - Refer
+              GlasswallBlockedFilesAction:
+                type: integer
+                enum: [1, 0, 2]
+                description: >
+                  Specifies the action to take for blocked files
+                  <br/><br/>* `1` - Relay
+                  <br/><br/>* `2` - Block
+                  <br/><br/>* `3` - Refer
+          Route:
+            type: object
+            properties: 
+              NcfsRoutingUrl:
+                type: string
+                description: NCFS endpoint
+              IsDeleted:
+                type: boolean
+                description: Specifies whether this endpoint is in use.
+              IsValidated:
+                type: boolean
+                description: Specifies whether this endpoint is validated for use.
+          ErrorReportTemplate:
+            type: string
+            example: For more information contact your system administrator
           ContentManagementFlags:
             type: object
             description: Content Management Flags used in the adaption process
