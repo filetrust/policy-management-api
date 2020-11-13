@@ -44,8 +44,8 @@ jobs:
         git config user.email github-actions@github.com
         git config user.name github-actions
         
-        # update imagestore.policy-management-api.tag value in the values.yaml file
-        yq write policy-management-api/values.yaml imagestore.policy-management-api.tag $IMAGE_TAG -i
+        # update imagestore.policymanagementapi.tag value in the values.yaml file
+        yq write policy-management-api/values.yaml imagestore.policymanagementapi.tag $IMAGE_TAG -i
         git add policy-management-api/values.yaml
         git commit -m 'update image tag'
         git push origin $IMAGE_TAG
