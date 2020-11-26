@@ -24,9 +24,9 @@ namespace PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.GetCurren
         }
 
         [Test]
-        public void NoContent_Is_Returned()
+        public void OkContent_Is_Returned()
         {
-            Assert.That(_output, Is.InstanceOf(typeof(NoContentResult)));
+            Assert.That(_output, Is.InstanceOf(typeof(OkObjectResult)));
         }
 
         [Test]
