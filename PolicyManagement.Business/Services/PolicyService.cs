@@ -104,7 +104,7 @@ namespace Glasswall.PolicyManagement.Business.Services
                 await _fileShare.DeleteDirectoryAsync(string.Format(HistoryDirTemplate, id), cancellationToken);
             else
                 await _fileShare.DeleteDirectoryAsync(DraftDirPath, cancellationToken);
-
+            
             currentPolicy.PolicyType = PolicyType.Historical;
             await InternalUploadPolicyAsync(string.Format(HistoryFileTemplate, currentPolicy.Id), currentPolicy, cancellationToken);
         }
