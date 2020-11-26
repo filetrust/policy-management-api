@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.PolicyManagement.Common.Models;
+using Glasswall.PolicyManagement.Common.Models.Enums;
 using Glasswall.PolicyManagement.Common.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +30,7 @@ namespace Glasswall.PolicyManagement.Api.Controllers
         {
             var policy = await _policyService.GetDraftAsync(cancellationToken);
 
-            return Ok(policy);
+            return Ok(policy ?? PolicyModel.Default(PolicyType.Current));
         }
 
         [HttpPut("draft")]
@@ -45,10 +46,7 @@ namespace Glasswall.PolicyManagement.Api.Controllers
         {
             var policy = await _policyService.GetCurrentAsync(cancellationToken);
 
-            if (policy == null)
-                return NoContent();
-
-            return Ok(policy);
+            return Ok(policy ?? PolicyModel.Default(PolicyType.Current));
         }
 
         [HttpGet("history")]
