@@ -43,7 +43,7 @@ namespace Glasswall.PolicyManagement.Common.Models
         {
             return new PolicyModel
             {
-                Id = Guid.Empty,
+                Id = Guid.NewGuid(),
                 Created = DateTimeOffset.UtcNow,
                 LastEdited = DateTimeOffset.MinValue,
                 PolicyType = type,
