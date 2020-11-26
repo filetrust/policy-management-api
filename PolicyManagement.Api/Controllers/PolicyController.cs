@@ -30,7 +30,7 @@ namespace Glasswall.PolicyManagement.Api.Controllers
         {
             var policy = await _policyService.GetDraftAsync(cancellationToken);
 
-            return Ok(policy ?? PolicyModel.Default(PolicyType.Current));
+            return Ok(policy ?? PolicyModel.Default(PolicyType.Draft));
         }
 
         [HttpPut("draft")]
