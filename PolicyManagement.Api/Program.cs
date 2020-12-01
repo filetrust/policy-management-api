@@ -3,7 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using Glasswall.PolicyManagement.Api.Configuration.ChangeTracking;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace Glasswall.PolicyManagement.Api
@@ -18,7 +20,13 @@ namespace Glasswall.PolicyManagement.Api
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-
+                .ConfigureAppConfiguration(c =>
+                {
+                    c.AddJsonFile(ConfigMapFileProvider.FromRelativePath("config"),
+                        "appsettings.json",
+                        optional: true,
+                        reloadOnChange: true);
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.ConfigureKestrel(options =>

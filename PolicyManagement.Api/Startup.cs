@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Azure.Storage.Files.Shares;
 using Flurl.Http;
+using Glasswall.PolicyManagement.Api.BackgroundServices;
+using Glasswall.PolicyManagement.Business.BackgroundServices;
 using Glasswall.PolicyManagement.Business.Configuration;
 using Glasswall.PolicyManagement.Business.Serialisation;
 using Glasswall.PolicyManagement.Business.Services;
 using Glasswall.PolicyManagement.Business.Store;
+using Glasswall.PolicyManagement.Common.BackgroundServices;
 using Glasswall.PolicyManagement.Common.Configuration;
 using Glasswall.PolicyManagement.Common.Configuration.Validation;
 using Glasswall.PolicyManagement.Common.Serialisation;
@@ -55,18 +58,18 @@ namespace Glasswall.PolicyManagement.Api
                     });
             });
 
-            services.TryAddTransient<IConfigurationParser, EnvironmentVariableParser>();
-            services.TryAddTransient<IDictionary<string, IConfigurationItemValidator>>(_ => new Dictionary<string, IConfigurationItemValidator>
+            services.TryAddScoped<IConfigurationParser, EnvironmentVariableParser>();
+            services.TryAddScoped<IDictionary<string, IConfigurationItemValidator>>(_ => new Dictionary<string, IConfigurationItemValidator>
             {
                 {nameof(IPolicyManagementApiConfiguration.AccountName), new StringValidator(1)},
                 {nameof(IPolicyManagementApiConfiguration.AccountKey), new StringValidator(1)},
                 {nameof(IPolicyManagementApiConfiguration.ShareName), new StringValidator(1)},
-                {nameof(IPolicyManagementApiConfiguration.PolicyUpdateServiceEndpointCsv), new StringValidator(1)},
-                {nameof(IPolicyManagementApiConfiguration.NcfsPolicyUpdateServiceEndpointCsv), new StringValidator(1)},
+                {nameof(IPolicyManagementApiConfiguration.PolicyUpdateServiceEndpointCsv), new StringValidator(0)},
+                {nameof(IPolicyManagementApiConfiguration.NcfsPolicyUpdateServiceEndpointCsv), new StringValidator(0)},
                 {nameof(IPolicyManagementApiConfiguration.TokenUsername), new StringValidator(1)},
                 {nameof(IPolicyManagementApiConfiguration.TokenPassword), new StringValidator(1)}
             });
-            services.TryAddSingleton<IPolicyManagementApiConfiguration>(serviceProvider =>
+            services.TryAddScoped<IPolicyManagementApiConfiguration>(serviceProvider =>
             {
                 var configuration = serviceProvider.GetRequiredService<IConfigurationParser>();
                 return configuration.Parse<PolicyManagementApiConfiguration>();
@@ -82,6 +85,10 @@ namespace Glasswall.PolicyManagement.Api
                 var configuration = s.GetRequiredService<IPolicyManagementApiConfiguration>();
                 return new ShareServiceClient($"DefaultEndpointsProtocol=https;AccountName={configuration.AccountName};AccountKey={configuration.AccountKey};EndpointSuffix=core.windows.net").GetShareClient(configuration.ShareName);
             });
+
+            services.AddHostedService<PolicySynchronizationBackgroundService>();
+            services.AddTransient<IPolicySynchronizer, NcfsPolicyDistributer>();
+            services.AddTransient<IPolicySynchronizer, AdaptationPolicyDistributer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,7 +99,7 @@ namespace Glasswall.PolicyManagement.Api
 
             app.UseRouting();
             app.UseAuthorization();
-
+            
             app.Use((context, next) =>
             {
                 context.Response.Headers["Access-Control-Allow-Methods"] = "*";

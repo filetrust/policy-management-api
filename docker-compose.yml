@@ -5,4 +5,4 @@ services:
     image: ${DOCKER_REGISTRY-}policymanagementapi
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: PolicyManagement.Api/Dockerfile
