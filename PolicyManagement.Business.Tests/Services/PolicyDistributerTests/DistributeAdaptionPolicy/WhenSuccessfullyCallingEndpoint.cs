@@ -1,8 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using Flurl.Http.Testing;
+﻿using Flurl.Http.Testing;
 using Glasswall.PolicyManagement.Business.Services;
 using Glasswall.PolicyManagement.Common.Configuration;
 using Glasswall.PolicyManagement.Common.Models;
@@ -13,9 +9,13 @@ using Glasswall.PolicyManagement.Common.Models.Ncfs;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using TestCommon;
 
-namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distribute
+namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.DistributeAdaptionPolicy
 {
     [TestFixture]
     public class WhenSuccessfullyCallingEndpoint : UnitTestBase<PolicyDistributer>

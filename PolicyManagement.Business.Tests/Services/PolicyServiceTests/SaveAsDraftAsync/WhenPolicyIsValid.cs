@@ -42,7 +42,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyServiceTests.SaveAsDraf
         [Test]
         public void UTF8_String_Uploaded()
         {
-            _fileShare.Verify(x => x.UploadAsync(It.Is<string>(f => f == "draft/policy.json"),
+            _fileShare.Verify(x => x.WriteAsync(It.Is<string>(f => f == "draft/policy.json"),
                     It.Is<byte[]>(f => Encoding.UTF8.GetString(f) == _jsonFile),
                     It.Is<CancellationToken>(f => f == Token)),
                 Times.Once);

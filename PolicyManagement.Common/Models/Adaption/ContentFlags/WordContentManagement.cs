@@ -1,7 +1,9 @@
 ﻿using Glasswall.PolicyManagement.Common.Models.Enums;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Glasswall.PolicyManagement.Common.Models.Adaption.ContentFlags
 {
+    [ExcludeFromCodeCoverage]
     public class WordContentManagement
     {
         public ContentManagementFlagAction DynamicDataExchange { get; set; }

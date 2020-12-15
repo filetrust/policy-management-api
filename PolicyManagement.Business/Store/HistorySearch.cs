@@ -2,14 +2,14 @@
 
 namespace Glasswall.PolicyManagement.Business.Store
 {
-    public class HistorySearch : IPathFilter
+    public class HistorySearch : IPathActions
     {
         public PathAction DecideAction(string path)
         {
-            if (path == "historical")
+            if (path.EndsWith("historical"))
                 return PathAction.Recurse;
 
-            if (path.StartsWith("historical"))
+            if (path.Contains("historical"))
                 return PathAction.Collect;
 
             return PathAction.Continue;

@@ -6,7 +6,7 @@ using TestCommon;
 namespace PolicyManagement.Business.Tests.Store.HistorySearchTests.DecideAction
 {
     [TestFixture]
-    public class WhenPathIsValid : UnitTestBase<IPathFilter>
+    public class WhenPathIsValid : UnitTestBase<IPathActions>
     {
         [OneTimeSetUp]
         public void Setup()

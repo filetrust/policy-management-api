@@ -1,5 +1,8 @@
-﻿namespace Glasswall.PolicyManagement.Common.Models.Adaption.ContentFlags
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Glasswall.PolicyManagement.Common.Models.Adaption.ContentFlags
 {
+    [ExcludeFromCodeCoverage]
     public class ContentManagementFlags
     {
         public PdfContentManagement PdfContentManagement { get; set; }

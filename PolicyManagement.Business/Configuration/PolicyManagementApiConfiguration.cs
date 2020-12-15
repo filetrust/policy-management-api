@@ -4,12 +4,11 @@ namespace Glasswall.PolicyManagement.Business.Configuration
 {
     public class PolicyManagementApiConfiguration : IPolicyManagementApiConfiguration
     {
-        public string ShareName { get; set; }
-        public string AccountName { get; set; }
-        public string AccountKey { get; set; }
         public string PolicyUpdateServiceEndpointCsv { get; set; }
-        public string TokenUsername { get; set;}
-        public string TokenPassword { get; set; }
+        public string PolicyUpdateServiceUsername { get; set;}
+        public string PolicyUpdateServicePassword { get; set; }
         public string NcfsPolicyUpdateServiceEndpointCsv { get; set; }
+        public string NcfsPolicyUpdateServiceUsername { get; set; }
+        public string NcfsPolicyUpdateServicePassword { get; set; }
     }
 }

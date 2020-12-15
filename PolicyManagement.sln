@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolicyManagement.Api.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolicyManagement.Business.Tests", "PolicyManagement.Business.Tests\PolicyManagement.Business.Tests.csproj", "{12CC1316-F5E8-4C1C-B736-EA46AD00EB9E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolicyManagement.Api.Function", "PolicyManagement.Api.Function\PolicyManagement.Api.Function.csproj", "{60E7A19C-1C7C-4B90-A111-736698615DBB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCommon", "TestCommon\TestCommon.csproj", "{5715D2CC-DB34-4547-BECC-5D96C7A334D1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CE9EE60F-6221-46D0-AD9D-6A2B090F45B8}"
@@ -58,10 +56,6 @@ Global
 		{12CC1316-F5E8-4C1C-B736-EA46AD00EB9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12CC1316-F5E8-4C1C-B736-EA46AD00EB9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12CC1316-F5E8-4C1C-B736-EA46AD00EB9E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{60E7A19C-1C7C-4B90-A111-736698615DBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{60E7A19C-1C7C-4B90-A111-736698615DBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{60E7A19C-1C7C-4B90-A111-736698615DBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{60E7A19C-1C7C-4B90-A111-736698615DBB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5715D2CC-DB34-4547-BECC-5D96C7A334D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5715D2CC-DB34-4547-BECC-5D96C7A334D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5715D2CC-DB34-4547-BECC-5D96C7A334D1}.Release|Any CPU.ActiveCfg = Release|Any CPU

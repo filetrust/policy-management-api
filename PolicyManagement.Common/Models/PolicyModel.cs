@@ -3,6 +3,7 @@ using Glasswall.PolicyManagement.Common.Models.Adaption;
 using Glasswall.PolicyManagement.Common.Models.Adaption.ContentFlags;
 using Glasswall.PolicyManagement.Common.Models.Enums;
 using Glasswall.PolicyManagement.Common.Models.Ncfs;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Glasswall.PolicyManagement.Common.Models
 {
@@ -12,12 +13,15 @@ namespace Glasswall.PolicyManagement.Common.Models
 
         public PolicyType PolicyType { get; set; }
 
+        [ExcludeFromCodeCoverage]
         public DateTimeOffset? Published { get; set; }
 
         public DateTimeOffset LastEdited { get; set; }
 
+        [ExcludeFromCodeCoverage]
         public DateTimeOffset Created { get; set; }
 
+        [ExcludeFromCodeCoverage]
         public string UpdatedBy { get; set; }
 
         public AdaptionPolicy AdaptionPolicy { get; set; }

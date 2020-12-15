@@ -11,7 +11,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyServiceTests
 {
     public class PolicyServiceTestBase : UnitTestBase<PolicyService>
     {
-        protected Mock<IFileShare> _fileShare;
+        protected Mock<IFileStore> _fileShare;
         protected Mock<ILogger<PolicyService>> _logger;
         protected Mock<IJsonSerialiser> _serializer;
         protected PolicyModel ExpectedModel;
@@ -19,7 +19,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyServiceTests
 
         protected void SharedSetup()
         {
-            _fileShare = new Mock<IFileShare>();
+            _fileShare = new Mock<IFileStore>();
             _logger = new Mock<ILogger<PolicyService>>();
             _serializer = new Mock<IJsonSerialiser>();
 

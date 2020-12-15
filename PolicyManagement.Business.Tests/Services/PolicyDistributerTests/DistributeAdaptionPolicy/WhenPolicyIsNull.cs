@@ -1,12 +1,12 @@
-﻿using System.Threading;
-using Glasswall.PolicyManagement.Business.Services;
+﻿using Glasswall.PolicyManagement.Business.Services;
 using Glasswall.PolicyManagement.Common.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
+using System.Threading;
 using TestCommon;
 
-namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distribute
+namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.DistributeAdaptionPolicy
 {
     [TestFixture]
     public class WhenPolicyIsNull : UnitTestBase<PolicyDistributer>

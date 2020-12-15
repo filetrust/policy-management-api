@@ -6,9 +6,11 @@ using Glasswall.PolicyManagement.Common.BackgroundServices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Glasswall.PolicyManagement.Api.BackgroundServices
 {
+    [ExcludeFromCodeCoverage]
     public class PolicySynchronizationBackgroundService : IHostedService, IDisposable
     {
         private readonly ILogger<PolicySynchronizationBackgroundService> _logger;
