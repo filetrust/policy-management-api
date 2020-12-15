@@ -31,7 +31,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyServiceTests.DeleteAsyn
         [Test]
         public void Policy_Is_Deleted()
         {
-            _fileShare.Verify(s => s.DeleteDirectoryAsync(It.Is<string>(f => f == $"historical/{_input}"), It.Is<CancellationToken>(f => f == Token)), Times.Once);
+            _fileShare.Verify(s => s.DeleteAsync(It.Is<string>(f => f == $"historical/{_input}"), It.Is<CancellationToken>(f => f == Token)), Times.Once);
         }
     }
 }

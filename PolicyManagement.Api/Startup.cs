@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
-using Azure.Storage.Files.Shares;
-using Flurl.Http;
 using Glasswall.PolicyManagement.Api.BackgroundServices;
 using Glasswall.PolicyManagement.Business.BackgroundServices;
 using Glasswall.PolicyManagement.Business.Configuration;
@@ -11,7 +9,6 @@ using Glasswall.PolicyManagement.Business.Services;
 using Glasswall.PolicyManagement.Business.Store;
 using Glasswall.PolicyManagement.Common.BackgroundServices;
 using Glasswall.PolicyManagement.Common.Configuration;
-using Glasswall.PolicyManagement.Common.Configuration.Validation;
 using Glasswall.PolicyManagement.Common.Serialisation;
 using Glasswall.PolicyManagement.Common.Services;
 using Glasswall.PolicyManagement.Common.Store;
@@ -58,34 +55,12 @@ namespace Glasswall.PolicyManagement.Api
                     });
             });
 
-            services.TryAddScoped<IConfigurationParser, EnvironmentVariableParser>();
-            services.TryAddScoped<IDictionary<string, IConfigurationItemValidator>>(_ => new Dictionary<string, IConfigurationItemValidator>
-            {
-                {nameof(IPolicyManagementApiConfiguration.AccountName), new StringValidator(1)},
-                {nameof(IPolicyManagementApiConfiguration.AccountKey), new StringValidator(1)},
-                {nameof(IPolicyManagementApiConfiguration.ShareName), new StringValidator(1)},
-                {nameof(IPolicyManagementApiConfiguration.PolicyUpdateServiceEndpointCsv), new StringValidator(0)},
-                {nameof(IPolicyManagementApiConfiguration.NcfsPolicyUpdateServiceEndpointCsv), new StringValidator(0)},
-                {nameof(IPolicyManagementApiConfiguration.TokenUsername), new StringValidator(1)},
-                {nameof(IPolicyManagementApiConfiguration.TokenPassword), new StringValidator(1)}
-            });
-            services.TryAddScoped<IPolicyManagementApiConfiguration>(serviceProvider =>
-            {
-                var configuration = serviceProvider.GetRequiredService<IConfigurationParser>();
-                return configuration.Parse<PolicyManagementApiConfiguration>();
-            });
+            services.TryAddScoped(_ => ValidateAndBind(Configuration));
 
             services.TryAddTransient<IPolicyDistributer, PolicyDistributer>();
             services.TryAddTransient<IPolicyService, PolicyService>();
             services.TryAddTransient<IJsonSerialiser, JsonSerialiser>();
-            services.TryAddTransient<IFileShare, AzureFileShare>();
-
-            services.TryAddTransient(s =>
-            {
-                var configuration = s.GetRequiredService<IPolicyManagementApiConfiguration>();
-                return new ShareServiceClient($"DefaultEndpointsProtocol=https;AccountName={configuration.AccountName};AccountKey={configuration.AccountKey};EndpointSuffix=core.windows.net").GetShareClient(configuration.ShareName);
-            });
-
+            services.TryAddTransient<IFileStore>(s => new MountedFileStore(s.GetRequiredService<ILogger<MountedFileStore>>(), "/mnt/policies"));
             services.AddHostedService<PolicySynchronizationBackgroundService>();
             services.AddTransient<IPolicySynchronizer, NcfsPolicyDistributer>();
             services.AddTransient<IPolicySynchronizer, AdaptationPolicyDistributer>();
@@ -119,6 +94,29 @@ namespace Glasswall.PolicyManagement.Api
             });
 
             app.UseCors("*");
+        }
+
+
+        private static IPolicyManagementApiConfiguration ValidateAndBind(IConfiguration configuration)
+        {
+            ThrowIfNullOrWhitespace(configuration, "PolicyUpdateServiceUsername");
+            ThrowIfNullOrWhitespace(configuration, "PolicyUpdateServicePassword");
+            ThrowIfNullOrWhitespace(configuration, "NcfsPolicyUpdateServiceUsername");
+            ThrowIfNullOrWhitespace(configuration, "NcfsPolicyUpdateServicePassword");
+            ThrowIfNullOrWhitespace(configuration, "PolicyUpdateServiceEndpointCsv");
+            ThrowIfNullOrWhitespace(configuration, "NcfsPolicyUpdateServiceEndpointCsv");
+            
+            var businessConfig = new PolicyManagementApiConfiguration();
+
+            configuration.Bind(businessConfig);
+
+            return businessConfig;
+        }
+
+        private static void ThrowIfNullOrWhitespace(IConfiguration configuration, string key)
+        {
+            if (string.IsNullOrWhiteSpace(configuration[key]))
+                throw new ConfigurationErrorsException($"{key} was not provided");
         }
     }
 }

@@ -20,13 +20,13 @@ namespace PolicyManagement.Business.Tests.Services.PolicyServiceTests.GetHistori
         {
             SharedSetup();
 
-            _fileShare.Setup(s => s.ListAsync(It.IsAny<IPathFilter>(), It.IsAny<CancellationToken>()))
+            _fileShare.Setup(s => s.SearchAsync(It.IsAny<string>(), It.IsAny<IPathActions>(), It.IsAny<CancellationToken>()))
                 .Returns(new [] { "historic" }.AsAsyncEnumerable());
 
             _fileShare.Setup(s => s.ExistsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            _fileShare.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _fileShare.Setup(s => s.ReadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_expectedStream = new MemoryStream());
 
             _serializer.Setup(s => s.Deserialize<PolicyModel>(It.IsAny<MemoryStream>(), It.IsAny<CancellationToken>()))
@@ -45,7 +45,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyServiceTests.GetHistori
         [Test]
         public void Policy_Downloaded()
         {
-            _fileShare.Verify(s => s.DownloadAsync(It.Is<string>(f => f == "historic/policy.json"), It.Is<CancellationToken>(f => f == Token)));
+            _fileShare.Verify(s => s.ReadAsync(It.Is<string>(f => f == "historic/policy.json"), It.Is<CancellationToken>(f => f == Token)));
         }
 
         [Test]

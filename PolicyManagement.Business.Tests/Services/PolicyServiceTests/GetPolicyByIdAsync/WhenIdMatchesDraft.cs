@@ -25,7 +25,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyServiceTests.GetPolicyB
             _fileShare.Setup(s => s.ExistsAsync(It.Is<string>(f => f == "draft/policy.json"), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            _fileShare.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _fileShare.Setup(s => s.ReadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_expectedStream = new MemoryStream());
 
             _serializer.Setup(s => s.Deserialize<PolicyModel>(It.IsAny<MemoryStream>(), It.IsAny<CancellationToken>()))
@@ -43,7 +43,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyServiceTests.GetPolicyB
         [Test]
         public void Policy_Downloaded()
         {
-            _fileShare.Verify(s => s.DownloadAsync(It.Is<string>(f => f == "draft/policy.json"), It.Is<CancellationToken>(f => f == Token)));
+            _fileShare.Verify(s => s.ReadAsync(It.Is<string>(f => f == "draft/policy.json"), It.Is<CancellationToken>(f => f == Token)));
         }
 
         [Test]

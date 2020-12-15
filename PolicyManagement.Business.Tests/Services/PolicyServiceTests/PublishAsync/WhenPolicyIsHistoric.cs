@@ -35,7 +35,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyServiceTests.PublishAsy
             _fileShare.Setup(s => s.ExistsAsync(It.Is<string>(f => f == "current/policy.json"), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
 
-            _fileShare.Setup(s => s.DownloadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _fileShare.Setup(s => s.ReadAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new MemoryStream());
 
             _serializer.Setup(s => s.Serialize(It.IsAny<PolicyModel>(), It.IsAny<CancellationToken>()))
@@ -62,35 +62,35 @@ namespace PolicyManagement.Business.Tests.Services.PolicyServiceTests.PublishAsy
         [Order(2)]
         public void Current_Is_Downloaded()
         {
-            _fileShare.Verify(x => x.DownloadAsync(It.Is<string>(f => f == "current/policy.json"), It.Is<CancellationToken>(f => f == Token)), Times.Once);
+            _fileShare.Verify(x => x.ReadAsync(It.Is<string>(f => f == "current/policy.json"), It.Is<CancellationToken>(f => f == Token)), Times.Once);
         }
 
         [Test]
         [Order(3)]
         public void Historic_Is_Downloaded()
         {
-            _fileShare.Verify(x => x.DownloadAsync(It.Is<string>(f => f == $"historical/{_input}/policy.json"), It.Is<CancellationToken>(f => f == Token)), Times.Once);
+            _fileShare.Verify(x => x.ReadAsync(It.Is<string>(f => f == $"historical/{_input}/policy.json"), It.Is<CancellationToken>(f => f == Token)), Times.Once);
         }
 
         [Test]
         [Order(4)]
         public void InputPolicy_Is_Published()
         {
-            _fileShare.Verify(x => x.UploadAsync(It.Is<string>(f => f == "current/policy.json"), It.IsAny<byte[]>(), It.Is<CancellationToken>(f => f == Token)), Times.Once);
+            _fileShare.Verify(x => x.WriteAsync(It.Is<string>(f => f == "current/policy.json"), It.IsAny<byte[]>(), It.Is<CancellationToken>(f => f == Token)), Times.Once);
         }
 
         [Test]
         [Order(5)]
         public void Current_Is_Moved_To_Historic()
         {
-            _fileShare.Verify(x => x.UploadAsync(It.Is<string>(f => f == $"historical/{_currentPolicy.Id}/policy.json"), It.IsAny<byte[]>(), It.Is<CancellationToken>(f => f == Token)), Times.Once);
+            _fileShare.Verify(x => x.WriteAsync(It.Is<string>(f => f == $"historical/{_currentPolicy.Id}/policy.json"), It.IsAny<byte[]>(), It.Is<CancellationToken>(f => f == Token)), Times.Once);
         }
 
         [Test]
         [Order(6)]
         public void Historical_Is_Deleted()
         {
-            _fileShare.Verify(x => x.DeleteDirectoryAsync(It.Is<string>(f => f == $"historical/{ExpectedModel.Id}"), It.Is<CancellationToken>(f => f == Token)), Times.Once);
+            _fileShare.Verify(x => x.DeleteAsync(It.Is<string>(f => f == $"historical/{ExpectedModel.Id}"), It.Is<CancellationToken>(f => f == Token)), Times.Once);
         }
 
         [Test]

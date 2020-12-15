@@ -48,8 +48,8 @@ namespace Glasswall.PolicyManagement.Business.Services
                         cli.Settings.HttpClientFactory = new UntrustedCertClientFactory());
 
                     var tokenResponse = await $"{endpoint}/api/v1/auth/token".WithBasicAuth(
-                        _policyManagementApiConfiguration.TokenUsername,
-                        _policyManagementApiConfiguration.TokenPassword
+                        _policyManagementApiConfiguration.NcfsPolicyUpdateServiceUsername,
+                        _policyManagementApiConfiguration.NcfsPolicyUpdateServicePassword
                     ).GetAsync(cancellationToken);
 
                     var token = await tokenResponse.GetStringAsync();
@@ -80,8 +80,8 @@ namespace Glasswall.PolicyManagement.Business.Services
                         cli.Settings.HttpClientFactory = new UntrustedCertClientFactory());
 
                     var tokenResponse = await $"{endpoint}/api/v1/auth/token".WithBasicAuth(
-                        _policyManagementApiConfiguration.TokenUsername,
-                        _policyManagementApiConfiguration.TokenPassword
+                        _policyManagementApiConfiguration.PolicyUpdateServiceUsername,
+                        _policyManagementApiConfiguration.PolicyUpdateServicePassword
                     ).GetAsync(cancellationToken);
                     
                     var token = await tokenResponse.GetStringAsync();
