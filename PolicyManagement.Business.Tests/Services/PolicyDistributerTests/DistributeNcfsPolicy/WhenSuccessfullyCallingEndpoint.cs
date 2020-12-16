@@ -5,6 +5,8 @@ using Flurl.Http.Testing;
 using Glasswall.PolicyManagement.Business.Services;
 using Glasswall.PolicyManagement.Common.Configuration;
 using Glasswall.PolicyManagement.Common.Models;
+using Glasswall.PolicyManagement.Common.Models.Adaption;
+using Glasswall.PolicyManagement.Common.Models.Enums;
 using Glasswall.PolicyManagement.Common.Models.Ncfs;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -43,9 +45,13 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
 
             await ClassInTest.DistributeNcfsPolicy(_input = new PolicyModel
             {
-                NcfsPolicy = new NcfsPolicy
+                AdaptionPolicy = new AdaptionPolicy
                 {
-                    NcfsDecision = NcfsDecision.Relay
+                    NcfsActions = new NcfsActions
+                    {
+                        GlasswallBlockedFilesAction = NcfsOption.Relay,
+                        UnprocessableFileTypeAction = NcfsOption.Refer
+                    }
                 }
             }, _token = new CancellationToken());
         }
@@ -63,14 +69,16 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
                 .With(x => x.HttpRequestMessage.Method == HttpMethod.Put)
                 .With(x => x.RequestBody == Newtonsoft.Json.JsonConvert.SerializeObject(new
                 {
-                    NcfsDecision = NcfsDecision.Relay
+                    GlasswallBlockedFilesAction = NcfsOption.Relay,
+                    UnprocessableFileTypeAction = NcfsOption.Refer
                 })).Times(1);
 
             _httpTest.ShouldHaveCalled("http://endpoint2:401/api/v1/policy")
                 .With(x => x.HttpRequestMessage.Method == HttpMethod.Put)
                 .With(x => x.RequestBody == Newtonsoft.Json.JsonConvert.SerializeObject(new
                 {
-                    NcfsDecision = NcfsDecision.Relay
+                    GlasswallBlockedFilesAction = NcfsOption.Relay,
+                    UnprocessableFileTypeAction = NcfsOption.Refer
                 })).Times(1);
 
             Assert.That(_httpTest.CallLog.Count, Is.EqualTo(4));

@@ -56,7 +56,8 @@ namespace Glasswall.PolicyManagement.Business.Services
 
                     await $"{endpoint}/api/v1/policy".WithOAuthBearerToken(token).PutJsonAsync(new
                     {
-                        policy.NcfsPolicy?.NcfsDecision
+                        policy.AdaptionPolicy?.NcfsActions?.GlasswallBlockedFilesAction,
+                        policy.AdaptionPolicy?.NcfsActions?.UnprocessableFileTypeAction
                     }, cancellationToken);
 
                     _logger.LogInformation($"Signalling Policy Update to '{endpoint}' complete");

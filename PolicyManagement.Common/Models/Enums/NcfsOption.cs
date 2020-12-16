@@ -5,6 +5,7 @@
         NotSet,
         Relay,
         Block,
-        Refer
+        Refer,
+        Replace
     }
 }
