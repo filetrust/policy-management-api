@@ -94,7 +94,9 @@ namespace Glasswall.PolicyManagement.Business.Services
                         policy.AdaptionPolicy?.NcfsActions?.UnprocessableFileTypeAction,
                         policy.AdaptionPolicy?.NcfsActions?.GlasswallBlockedFilesAction,
                         policy.AdaptionPolicy?.NcfsRoute?.NcfsRoutingUrl,
-                        policy.AdaptionPolicy?.ErrorReportTemplate
+                        RebuildReportMessage = policy.AdaptionPolicy?.ErrorReportTemplate,
+                        ArchivePasswordProtectedReportMessage = policy.AdaptionPolicy?.ArchivePasswordProtectedReportMessage,
+                        ArchiveErrorReportMessage = policy.AdaptionPolicy?.ArchiveErrorReportMessage
                     }, cancellationToken);
 
                     _logger.LogInformation($"Signalling Policy Update to '{endpoint}' complete");
