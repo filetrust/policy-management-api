@@ -93,10 +93,10 @@ namespace Glasswall.PolicyManagement.Business.Services
                         policy.AdaptionPolicy?.ContentManagementFlags,
                         policy.AdaptionPolicy?.NcfsActions?.UnprocessableFileTypeAction,
                         policy.AdaptionPolicy?.NcfsActions?.GlasswallBlockedFilesAction,
-                        policy.AdaptionPolicy?.NcfsRoute?.NcfsRoutingUrl,
-                        RebuildReportMessage = policy.AdaptionPolicy?.ErrorReportTemplate,
-                        ArchivePasswordProtectedReportMessage = policy.AdaptionPolicy?.ArchivePasswordProtectedReportMessage,
-                        ArchiveErrorReportMessage = policy.AdaptionPolicy?.ArchiveErrorReportMessage
+                        NcfsRoutingUrl = policy.AdaptionPolicy?.NcfsRoute?.NcfsRoutingUrl ?? "https://ncfs-policy-update-service.icap-ncfs.svc.cluster.local",
+                        RebuildReportMessage = policy.AdaptionPolicy?.ErrorReportTemplate ?? "File could not be rebuilt",
+                        ArchivePasswordProtectedReportMessage = policy.AdaptionPolicy?.ArchivePasswordProtectedReportMessage ?? "Archive is password protected and could not be rebuilt",
+                        ArchiveErrorReportMessage = policy.AdaptionPolicy?.ArchiveErrorReportMessage ?? "Archive contains an error and could not be rebuilt"
                     }, cancellationToken);
 
                     _logger.LogInformation($"Signalling Policy Update to '{endpoint}' complete");
