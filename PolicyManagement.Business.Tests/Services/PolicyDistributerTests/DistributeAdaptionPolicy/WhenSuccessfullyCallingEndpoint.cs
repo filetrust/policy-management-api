@@ -83,8 +83,10 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
                     _input.AdaptionPolicy?.ContentManagementFlags,
                     _input.AdaptionPolicy?.NcfsActions?.UnprocessableFileTypeAction,
                     _input.AdaptionPolicy?.NcfsActions?.GlasswallBlockedFilesAction,
-                    _input.AdaptionPolicy?.NcfsRoute?.NcfsRoutingUrl,
-                    _input.AdaptionPolicy?.ErrorReportTemplate
+                    NcfsRoutingUrl = _input.AdaptionPolicy?.NcfsRoute?.NcfsRoutingUrl ?? "https://ncfs-policy-update-service.icap-ncfs.svc.cluster.local",
+                    RebuildReportMessage = _input.AdaptionPolicy?.ErrorReportTemplate ?? "File could not be rebuilt",
+                    ArchivePasswordProtectedReportMessage = _input.AdaptionPolicy?.ArchivePasswordProtectedReportMessage ?? "Archive is password protected and could not be rebuilt",
+                    ArchiveErrorReportMessage = _input.AdaptionPolicy?.ArchiveErrorReportMessage ?? "Archive contains an error and could not be rebuilt"
                 })).Times(1);
 
             _httpTest.ShouldHaveCalled("http://endpoint2:401/api/v1/policy")
@@ -95,8 +97,10 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
                     _input.AdaptionPolicy?.ContentManagementFlags,
                     _input.AdaptionPolicy?.NcfsActions?.UnprocessableFileTypeAction,
                     _input.AdaptionPolicy?.NcfsActions?.GlasswallBlockedFilesAction,
-                    _input.AdaptionPolicy?.NcfsRoute?.NcfsRoutingUrl,
-                    _input.AdaptionPolicy?.ErrorReportTemplate
+                    NcfsRoutingUrl = _input.AdaptionPolicy?.NcfsRoute?.NcfsRoutingUrl ?? "https://ncfs-policy-update-service.icap-ncfs.svc.cluster.local",
+                    RebuildReportMessage = _input.AdaptionPolicy?.ErrorReportTemplate ?? "File could not be rebuilt",
+                    ArchivePasswordProtectedReportMessage = _input.AdaptionPolicy?.ArchivePasswordProtectedReportMessage ?? "Archive is password protected and could not be rebuilt",
+                    ArchiveErrorReportMessage = _input.AdaptionPolicy?.ArchiveErrorReportMessage ?? "Archive contains an error and could not be rebuilt"
                 })).Times(1);
 
             Assert.That(_httpTest.CallLog.Count, Is.EqualTo(4));
