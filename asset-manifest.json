@@ -1,28 +1,28 @@
 {
   "files": {
-    "main.css": "/policy-management-api/static/css/main.1fc5229c.chunk.css",
-    "main.js": "/policy-management-api/static/js/main.1e1d0c3a.chunk.js",
-    "main.js.map": "/policy-management-api/static/js/main.1e1d0c3a.chunk.js.map",
-    "runtime-main.js": "/policy-management-api/static/js/runtime-main.a4d293b0.js",
-    "runtime-main.js.map": "/policy-management-api/static/js/runtime-main.a4d293b0.js.map",
-    "static/css/2.ecb7c289.chunk.css": "/policy-management-api/static/css/2.ecb7c289.chunk.css",
-    "static/js/2.9281a09f.chunk.js": "/policy-management-api/static/js/2.9281a09f.chunk.js",
-    "static/js/2.9281a09f.chunk.js.map": "/policy-management-api/static/js/2.9281a09f.chunk.js.map",
+    "main.css": "/policy-management-api/static/css/main.6ff0e7ca.chunk.css",
+    "main.js": "/policy-management-api/static/js/main.0b54932b.chunk.js",
+    "main.js.map": "/policy-management-api/static/js/main.0b54932b.chunk.js.map",
+    "runtime-main.js": "/policy-management-api/static/js/runtime-main.ca4c7fbd.js",
+    "runtime-main.js.map": "/policy-management-api/static/js/runtime-main.ca4c7fbd.js.map",
+    "static/css/2.8ad5dfc3.chunk.css": "/policy-management-api/static/css/2.8ad5dfc3.chunk.css",
+    "static/js/2.28250c97.chunk.js": "/policy-management-api/static/js/2.28250c97.chunk.js",
+    "static/js/2.28250c97.chunk.js.map": "/policy-management-api/static/js/2.28250c97.chunk.js.map",
     "index.html": "/policy-management-api/index.html",
-    "precache-manifest.00f54573e33be8f117de268a76091250.js": "/policy-management-api/precache-manifest.00f54573e33be8f117de268a76091250.js",
+    "precache-manifest.e4cb1818cea1f213856fede4a7713c63.js": "/policy-management-api/precache-manifest.e4cb1818cea1f213856fede4a7713c63.js",
     "service-worker.js": "/policy-management-api/service-worker.js",
-    "static/css/2.ecb7c289.chunk.css.map": "/policy-management-api/static/css/2.ecb7c289.chunk.css.map",
-    "static/css/main.1fc5229c.chunk.css.map": "/policy-management-api/static/css/main.1fc5229c.chunk.css.map",
-    "static/js/2.9281a09f.chunk.js.LICENSE.txt": "/policy-management-api/static/js/2.9281a09f.chunk.js.LICENSE.txt",
+    "static/css/2.8ad5dfc3.chunk.css.map": "/policy-management-api/static/css/2.8ad5dfc3.chunk.css.map",
+    "static/css/main.6ff0e7ca.chunk.css.map": "/policy-management-api/static/css/main.6ff0e7ca.chunk.css.map",
+    "static/js/2.28250c97.chunk.js.LICENSE.txt": "/policy-management-api/static/js/2.28250c97.chunk.js.LICENSE.txt",
     "static/media/api.yaml": "/policy-management-api/static/media/api.0f01aa85.yaml",
     "static/media/App.css": "/policy-management-api/static/media/roboto-regular-webfont.d96d07c1.woff2",
     "static/media/logo.svg": "/policy-management-api/static/media/logo.6c8e5727.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.a4d293b0.js",
-    "static/css/2.ecb7c289.chunk.css",
-    "static/js/2.9281a09f.chunk.js",
-    "static/css/main.1fc5229c.chunk.css",
-    "static/js/main.1e1d0c3a.chunk.js"
+    "static/js/runtime-main.ca4c7fbd.js",
+    "static/css/2.8ad5dfc3.chunk.css",
+    "static/js/2.28250c97.chunk.js",
+    "static/css/main.6ff0e7ca.chunk.css",
+    "static/js/main.0b54932b.chunk.js"
   ]
 }
