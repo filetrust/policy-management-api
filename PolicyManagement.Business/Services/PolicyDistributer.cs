@@ -42,7 +42,7 @@ namespace Glasswall.PolicyManagement.Business.Services
             {
                 try
                 {
-                    _logger.LogInformation($"Signalling Policy Update to '{endpoint}' starting");
+                    _logger.LogInformation($"Signalling Policy Update to '{endpoint}' starting. PolicyId: '{policy?.Id}'");
 
                     FlurlHttp.ConfigureClient(endpoint, cli =>
                         cli.Settings.HttpClientFactory = new UntrustedCertClientFactory());
@@ -75,7 +75,7 @@ namespace Glasswall.PolicyManagement.Business.Services
             {
                 try
                 {
-                    _logger.LogInformation($"Signalling Policy Update to '{endpoint}' starting");
+                    _logger.LogInformation($"Signalling Policy Update to '{endpoint}' starting. PolicyId: '{policy?.Id}'");
                     
                     FlurlHttp.ConfigureClient(endpoint, cli =>
                         cli.Settings.HttpClientFactory = new UntrustedCertClientFactory());
