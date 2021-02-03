@@ -55,7 +55,11 @@ namespace Glasswall.PolicyManagement.Common.Models
                 UpdatedBy = "",
                 NcfsPolicy = new NcfsPolicy
                 {
-                    NcfsDecision = NcfsDecision.Block
+                    NcfsActions = new NcfsActions
+                    {
+                        GlasswallBlockedFilesAction = NcfsOption.Relay,
+                        UnprocessableFileTypeAction = NcfsOption.Relay
+                    }
                 },
                 AdaptionPolicy = new AdaptionPolicy
                 {
