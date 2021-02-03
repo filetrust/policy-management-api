@@ -45,7 +45,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
 
             await ClassInTest.DistributeNcfsPolicy(_input = new PolicyModel
             {
-                AdaptionPolicy = new AdaptionPolicy
+                NcfsPolicy = new NcfsPolicy
                 {
                     NcfsActions = new NcfsActions
                     {

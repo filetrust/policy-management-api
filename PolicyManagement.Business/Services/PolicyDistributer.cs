@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Flurl.Http;
 using Glasswall.PolicyManagement.Common.Configuration;
 using Glasswall.PolicyManagement.Common.Models;
+using Glasswall.PolicyManagement.Common.Models.Enums;
 using Glasswall.PolicyManagement.Common.Services;
 using Microsoft.Extensions.Logging;
 
@@ -38,6 +39,12 @@ namespace Glasswall.PolicyManagement.Business.Services
 
         private async Task InternalDistributeNcfsPolicy(PolicyModel policy, CancellationToken cancellationToken)
         {
+            var payload = new
+            {
+                GlasswallBlockedFilesAction = policy?.NcfsPolicy?.NcfsActions?.GlasswallBlockedFilesAction ?? NcfsOption.Relay,
+                UnprocessableFileTypeAction = policy?.NcfsPolicy?.NcfsActions?.UnprocessableFileTypeAction ?? NcfsOption.Relay
+            };
+
             foreach (var endpoint in _policyManagementApiConfiguration.NcfsPolicyUpdateServiceEndpointCsv.Split(','))
             {
                 try
@@ -54,11 +61,7 @@ namespace Glasswall.PolicyManagement.Business.Services
 
                     var token = await tokenResponse.GetStringAsync();
 
-                    await $"{endpoint}/api/v1/policy".WithOAuthBearerToken(token).PutJsonAsync(new
-                    {
-                        policy.AdaptionPolicy?.NcfsActions?.GlasswallBlockedFilesAction,
-                        policy.AdaptionPolicy?.NcfsActions?.UnprocessableFileTypeAction
-                    }, cancellationToken);
+                    await $"{endpoint}/api/v1/policy".WithOAuthBearerToken(token).PutJsonAsync(payload, cancellationToken);
 
                     _logger.LogInformation($"Signalling Policy Update to '{endpoint}' complete");
                 }
