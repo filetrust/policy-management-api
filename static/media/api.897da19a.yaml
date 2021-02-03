@@ -173,14 +173,23 @@ Models:
         type: object
         description: Contains the settings used in the Non Compliant File Service
         properties:
-          NcfsDecision:
-            type: integer
-            enum: [1, 0, 2]
-            description: >
-              Specifies the action to take for files that reach the NCFS reference service
-              <br/><br/>* `1` - Relay
-              <br/><br/>* `2` - Replace
-              <br/><br/>* `3` - Block          
+          NcfsActions:
+            type: object
+            properties: 
+              UnprocessableFileTypeAction:
+                type: integer
+                enum: [1, 0, 2]
+                description: >
+                  Specifies the action to take for unprocessable files
+                  <br/><br/>* `1` - Relay
+                  <br/><br/>* `2` - Block
+              GlasswallBlockedFilesAction:
+                type: integer
+                enum: [1, 0, 2]
+                description: >
+                  Specifies the action to take for blocked files
+                  <br/><br/>* `1` - Relay
+                  <br/><br/>* `2` - Block
       AdaptionPolicy:
         type: object
         description: Contains the settings used in the adaption process
