@@ -37,7 +37,6 @@ namespace PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.Construct
         [TestCase(nameof(PolicyController.GetDraftPolicy), typeof(HttpGetAttribute), "draft")]
         [TestCase(nameof(PolicyController.SavePolicy), typeof(HttpPutAttribute), "draft")]
         [TestCase(nameof(PolicyController.GetCurrentPolicy), typeof(HttpGetAttribute), "current")]
-        [TestCase(nameof(PolicyController.GetHistoricPolicies), typeof(HttpGetAttribute), "history")]
         [TestCase(nameof(PolicyController.GetPolicy), typeof(HttpGetAttribute), null)]
         [TestCase(nameof(PolicyController.PublishDraft), typeof(HttpPutAttribute), "publish")]
         [TestCase(nameof(PolicyController.DistributeCurrent), typeof(HttpPutAttribute), "current/distribute-adaption")]
