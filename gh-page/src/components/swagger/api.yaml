@@ -105,6 +105,42 @@ paths:
                       $ref: '#/Models/Policy'
         204:
           description: No Content - No policy was found
+    post:
+      summary: Get a list of previous policies
+      description: Searches the policy store for previous policies.
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                Pagination:
+                  type: object
+                  properties:
+                    ZeroBasedIndex:
+                      type: number
+                      description: The zero based page number. Combined with PageSize is used to index into the collection of historical policies.
+                    PageSize:
+                      type: number
+                      description: The maximum count of historical policies per page. Combined with ZeroBasedIndex is used to index into the collection of historical policies.
+      responses:
+        200:
+          description: OK - The request was successful
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  PoliciesCount:
+                    type: number
+                    description: Number of policies contained in Policies
+                    example: 10
+                  Policies:
+                    type: array
+                    items:
+                      $ref: '#/Models/Policy'
+        204:
+          description: No Content - No policy was found
   /api/v1/policy/publish:
     put:
       summary: Publishes a policy by ID
