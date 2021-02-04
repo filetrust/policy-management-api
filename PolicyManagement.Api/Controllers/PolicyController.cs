@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,6 +57,35 @@ namespace Glasswall.PolicyManagement.Api.Controllers
 
             await foreach (var policy in _policyService.GetHistoricalPoliciesAsync(cancellationToken))
                 policies.Add(policy);
+
+            if (!policies.Any())
+                return NoContent();
+
+            return Ok(new HistoryResponse
+            {
+                Policies = policies,
+                PoliciesCount = policies.Count
+            });
+        }
+
+        [HttpPost("history")]
+        public async Task<IActionResult> GetHistoricPolicies([FromBody][Required]GetHistoricPoliciesRequestModel model, CancellationToken cancellationToken)
+        {
+            var policies = new List<PolicyModel>();
+
+            var policyIndex = 0;
+
+            var startCollectingIndex = model.Pagination.ZeroBasedIndex * model.Pagination.PageSize; // e.g 0, 25, 50
+            var stopCollectingIndex = startCollectingIndex + model.Pagination.PageSize; // e.g 25, 50, 75
+
+            await foreach (var policy in _policyService.GetHistoricalPoliciesAsync(cancellationToken))
+            {
+                if (policyIndex >= startCollectingIndex && policyIndex < stopCollectingIndex) policies.Add(policy);
+                
+                policyIndex++;
+
+                if (policyIndex >= stopCollectingIndex) break;
+            }
 
             if (!policies.Any())
                 return NoContent();
