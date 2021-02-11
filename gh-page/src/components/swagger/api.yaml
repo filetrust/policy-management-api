@@ -135,6 +135,10 @@ paths:
                     type: number
                     description: Number of policies contained in Policies
                     example: 10
+                  TotalPolicies:
+                    type: number
+                    description: Total number of historical policies in the store
+                    example: 9001
                   Policies:
                     type: array
                     items:
