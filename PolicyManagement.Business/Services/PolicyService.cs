@@ -58,7 +58,17 @@ namespace Glasswall.PolicyManagement.Business.Services
             await foreach (var path in _fileStore.SearchAsync("", new HistorySearch(), cancellationToken))
                 yield return await InternalDownloadAsync($"{path}/{PolicyFileName}", cancellationToken);
         }
-        
+
+        public async Task<int> CountHistoricalPoliciesAsync(CancellationToken cancellationToken)
+        {
+            var count = 0;
+
+            await foreach (var _ in _fileStore.SearchAsync("", new HistorySearch(), cancellationToken))
+                count++;
+
+            return count;
+        }
+
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             if (await _fileStore.ExistsAsync(string.Format(HistoryDirTemplate, id), cancellationToken))
