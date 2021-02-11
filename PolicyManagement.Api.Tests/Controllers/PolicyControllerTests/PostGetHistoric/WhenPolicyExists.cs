@@ -64,6 +64,7 @@ namespace PolicyManagement.Api.Tests.Controllers.PolicyControllerTests.PostGetHi
         public void Policy_Is_Requested()
         {
             Service.Verify(s => s.GetHistoricalPoliciesAsync(It.Is<CancellationToken>(x => x == MockCancellationToken)), Times.Once);
+            Service.Verify(s => s.CountHistoricalPoliciesAsync(It.Is<CancellationToken>(x => x == MockCancellationToken)), Times.Once);
             Service.VerifyNoOtherCalls();
         }
     }

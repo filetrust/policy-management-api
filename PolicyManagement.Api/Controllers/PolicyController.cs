@@ -90,10 +90,13 @@ namespace Glasswall.PolicyManagement.Api.Controllers
             if (!policies.Any())
                 return NoContent();
 
+            var totalCount = await _policyService.CountHistoricalPoliciesAsync(cancellationToken);
+
             return Ok(new HistoryResponse
             {
                 Policies = policies,
-                PoliciesCount = policies.Count
+                PoliciesCount = policies.Count,
+                TotalPolicies = totalCount
             });
         }
 
