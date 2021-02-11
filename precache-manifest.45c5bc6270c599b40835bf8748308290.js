@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "2f1c5a2f81cf9060d644efb88b8bd7ee",
+    "revision": "d2998b491cf16a293d4758953d2b84ba",
     "url": "/policy-management-api/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/policy-management-api/static/css/2.8ad5dfc3.chunk.css"
   },
   {
-    "revision": "3a384771f72255d07179",
+    "revision": "96d63bdb3284238b328b",
     "url": "/policy-management-api/static/css/main.6ff0e7ca.chunk.css"
   },
   {
@@ -20,16 +20,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/policy-management-api/static/js/2.28250c97.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "3a384771f72255d07179",
-    "url": "/policy-management-api/static/js/main.b545b162.chunk.js"
+    "revision": "96d63bdb3284238b328b",
+    "url": "/policy-management-api/static/js/main.5b3275fb.chunk.js"
   },
   {
     "revision": "a7fb4933732602b1c70f",
     "url": "/policy-management-api/static/js/runtime-main.ca4c7fbd.js"
   },
   {
-    "revision": "effb4b52e3260c53a9470bb90caf4f01",
-    "url": "/policy-management-api/static/media/api.effb4b52.yaml"
+    "revision": "19069fc79ef5227d2a039e144f4a8c42",
+    "url": "/policy-management-api/static/media/api.19069fc7.yaml"
   },
   {
     "revision": "8503c64fa486375dc20b3c00aa2e250a",
