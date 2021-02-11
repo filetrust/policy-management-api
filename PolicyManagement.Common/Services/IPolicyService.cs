@@ -13,7 +13,9 @@ namespace Glasswall.PolicyManagement.Common.Services
         Task<PolicyModel> GetCurrentAsync(CancellationToken cancellationToken);
         
         IAsyncEnumerable<PolicyModel> GetHistoricalPoliciesAsync(CancellationToken cancellationToken);
-        
+
+        Task<int> CountHistoricalPoliciesAsync(CancellationToken cancellationToken);
+
         Task<PolicyModel> GetPolicyByIdAsync(Guid id, CancellationToken cancellationToken);
 
         Task PublishAsync(Guid id, CancellationToken cancellationToken);
