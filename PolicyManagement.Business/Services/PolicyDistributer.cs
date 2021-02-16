@@ -96,7 +96,7 @@ namespace Glasswall.PolicyManagement.Business.Services
                         policy.AdaptionPolicy?.ContentManagementFlags,
                         policy.AdaptionPolicy?.NcfsActions?.UnprocessableFileTypeAction,
                         policy.AdaptionPolicy?.NcfsActions?.GlasswallBlockedFilesAction,
-                        NcfsRoutingUrl = policy.AdaptionPolicy?.NcfsRoute?.NcfsRoutingUrl ?? "https://ncfs-policy-update-service.icap-ncfs.svc.cluster.local",
+                        NcfsRoutingUrl = NcfsRoutingUrlOrDefault(policy.AdaptionPolicy?.NcfsRoute?.NcfsRoutingUrl),
                         RebuildReportMessage = policy.AdaptionPolicy?.ErrorReportTemplate ?? "File could not be rebuilt",
                         ArchivePasswordProtectedReportMessage = policy.AdaptionPolicy?.ArchivePasswordProtectedReportMessage ?? "Archive is password protected and could not be rebuilt",
                         ArchiveErrorReportMessage = policy.AdaptionPolicy?.ArchiveErrorReportMessage ?? "Archive contains an error and could not be rebuilt"
@@ -110,5 +110,9 @@ namespace Glasswall.PolicyManagement.Business.Services
                 }
             }
         }
+
+        private static string NcfsRoutingUrlOrDefault(string fromPolicy)
+        {
+            return string.IsNullOrWhiteSpace(fromPolicy) ? "https://ncfs-reference-service.icap-ncfs.svc.cluster.local" : fromPolicy;
     }
 }
