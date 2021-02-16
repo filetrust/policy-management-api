@@ -114,5 +114,6 @@ namespace Glasswall.PolicyManagement.Business.Services
         private static string NcfsRoutingUrlOrDefault(string fromPolicy)
         {
             return string.IsNullOrWhiteSpace(fromPolicy) ? "https://ncfs-reference-service.icap-ncfs.svc.cluster.local" : fromPolicy;
+        }
     }
 }
