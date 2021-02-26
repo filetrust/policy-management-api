@@ -5,7 +5,6 @@ using Flurl.Http.Testing;
 using Glasswall.PolicyManagement.Business.Services;
 using Glasswall.PolicyManagement.Common.Configuration;
 using Glasswall.PolicyManagement.Common.Models;
-using Glasswall.PolicyManagement.Common.Models.Adaption;
 using Glasswall.PolicyManagement.Common.Models.Enums;
 using Glasswall.PolicyManagement.Common.Models.Ncfs;
 using Microsoft.Extensions.Logging;
@@ -20,8 +19,6 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
     {
         private Mock<ILogger<PolicyDistributer>> _logger;
         private Mock<IPolicyManagementApiConfiguration> _configuration;
-        private PolicyModel _input;
-        private CancellationToken _token;
 
         private HttpTest _httpTest;
 
@@ -43,7 +40,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
             _httpTest.RespondWith("body");
             _httpTest.RespondWith("body");
 
-            await ClassInTest.DistributeNcfsPolicy(_input = new PolicyModel
+            await ClassInTest.DistributeNcfsPolicy(new PolicyModel
             {
                 NcfsPolicy = new NcfsPolicy
                 {
@@ -53,7 +50,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
                         UnprocessableFileTypeAction = NcfsOption.Refer
                     }
                 }
-            }, _token = new CancellationToken());
+            }, new CancellationToken());
         }
 
         [OneTimeTearDown]

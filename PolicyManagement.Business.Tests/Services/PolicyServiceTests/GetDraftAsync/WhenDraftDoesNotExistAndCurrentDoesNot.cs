@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Glasswall.PolicyManagement.Common.Models;
 using Moq;
@@ -10,7 +9,6 @@ namespace PolicyManagement.Business.Tests.Services.PolicyServiceTests.GetDraftAs
     [TestFixture]
     public class WhenDraftDoesNotExistAndCurrentDoesNot : PolicyServiceTestBase
     {
-        private MemoryStream _expectedStream;
         private PolicyModel _output;
 
         [OneTimeSetUp]

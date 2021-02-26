@@ -1,6 +1,7 @@
 using System;
 using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Glasswall.PolicyManagement.Api.BackgroundServices;
 using Glasswall.PolicyManagement.Business.BackgroundServices;
 using Glasswall.PolicyManagement.Business.Configuration;
@@ -20,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Polly;
 
 namespace Glasswall.PolicyManagement.Api
 {
@@ -60,7 +62,15 @@ namespace Glasswall.PolicyManagement.Api
             services.TryAddTransient<IPolicyDistributer, PolicyDistributer>();
             services.TryAddTransient<IPolicyService, PolicyService>();
             services.TryAddTransient<IJsonSerialiser, JsonSerialiser>();
-            services.TryAddTransient<IFileStore>(s => new MountedFileStore(s.GetRequiredService<ILogger<MountedFileStore>>(), "/mnt/policies"));
+
+            services.TryAddTransient<IFileStore>(s => new FileStore(s.GetRequiredService<ILogger<FileStore>>(), new PolicyStoreOptions("/mnt/policies", Policy
+                .Handle<Exception>()
+                .RetryAsync(10, (ex, i) =>
+                {
+                    var logger = s.GetRequiredService<ILogger<FileStore>>();
+                    logger.LogWarning(ex, $"Exception encountered, Retry {i}");
+                }))));
+
             services.AddHostedService<PolicySynchronizationBackgroundService>();
             services.AddTransient<IPolicySynchronizer, NcfsPolicyDistributer>();
             services.AddTransient<IPolicySynchronizer, AdaptationPolicyDistributer>();

@@ -18,8 +18,6 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
     {
         private Mock<ILogger<PolicyDistributer>> _logger;
         private Mock<IPolicyManagementApiConfiguration> _configuration;
-        private PolicyModel _input;
-        private CancellationToken _token;
 
         private HttpTest _httpTest;
 
@@ -36,10 +34,10 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
 
             _httpTest = new HttpTest();
 
-            await ClassInTest.DistributeAdaptionPolicy(_input = new PolicyModel { AdaptionPolicy = new AdaptionPolicy
+            await ClassInTest.DistributeAdaptionPolicy(new PolicyModel { AdaptionPolicy = new AdaptionPolicy
             {
                 ContentManagementFlags = new ContentManagementFlags()
-            }}, _token = new CancellationToken());
+            }}, new CancellationToken());
 
         }
 

@@ -28,7 +28,7 @@ namespace Glasswall.PolicyManagement.Api.BackgroundServices
         public Task StartAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("{0}: Timer Started.", nameof(PolicySynchronizationBackgroundService));
-            _timer = new Timer(_ => { DistributeCurrentPolicy(stoppingToken).GetAwaiter().GetResult(); }, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+           // _timer = new Timer(_ => { DistributeCurrentPolicy(stoppingToken).GetAwaiter().GetResult(); }, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
             return Task.CompletedTask;
         }
         
