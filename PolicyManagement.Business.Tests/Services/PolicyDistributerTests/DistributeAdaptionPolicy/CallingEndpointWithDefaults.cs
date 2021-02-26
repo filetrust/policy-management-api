@@ -1,24 +1,24 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Flurl.Http.Testing;
 using Glasswall.PolicyManagement.Business.Services;
 using Glasswall.PolicyManagement.Common.Configuration;
 using Glasswall.PolicyManagement.Common.Models;
-using Glasswall.PolicyManagement.Common.Models.Enums;
-using Glasswall.PolicyManagement.Common.Models.Ncfs;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using TestCommon;
 
-namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.DistributeNcfsPolicy
+namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.DistributeAdaptionPolicy
 {
     [TestFixture]
-    public class WhenSuccessfullyCallingEndpoint : UnitTestBase<PolicyDistributer>
+    public class CallingEndpointWithDefaults : UnitTestBase<PolicyDistributer>
     {
         private Mock<ILogger<PolicyDistributer>> _logger;
         private Mock<IPolicyManagementApiConfiguration> _configuration;
+        private PolicyModel _input;
 
         private HttpTest _httpTest;
 
@@ -30,7 +30,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
 
             ClassInTest = new PolicyDistributer(_logger.Object, _configuration.Object);
 
-            _configuration.Setup(s => s.NcfsPolicyUpdateServiceEndpointCsv)
+            _configuration.Setup(s => s.PolicyUpdateServiceEndpointCsv)
                 .Returns("https://endpoint1:3001,http://endpoint2:401");
 
             _httpTest = new HttpTest();
@@ -40,17 +40,11 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
             _httpTest.RespondWith("body");
             _httpTest.RespondWith("body");
 
-            await ClassInTest.DistributeNcfsPolicy(new PolicyModel
+            await ClassInTest.DistributeAdaptionPolicy(_input = new PolicyModel
             {
-                NcfsPolicy = new NcfsPolicy
-                {
-                    NcfsActions = new NcfsActions
-                    {
-                        GlasswallBlockedFilesAction = NcfsOption.Relay,
-                        UnprocessableFileTypeAction = NcfsOption.Refer
-                    }
-                }
+                Id = Guid.NewGuid()
             }, new CancellationToken());
+
         }
 
         [OneTimeTearDown]
@@ -66,25 +60,31 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
                 .With(x => x.HttpRequestMessage.Method == HttpMethod.Put)
                 .With(x => x.RequestBody == Newtonsoft.Json.JsonConvert.SerializeObject(new
                 {
-                    GlasswallBlockedFilesAction = NcfsOption.Relay,
-                    UnprocessableFileTypeAction = NcfsOption.Refer
+                    PolicyId = _input.Id,
+                    _input.AdaptionPolicy?.ContentManagementFlags,
+                    _input.AdaptionPolicy?.NcfsActions?.UnprocessableFileTypeAction,
+                    _input.AdaptionPolicy?.NcfsActions?.GlasswallBlockedFilesAction,
+                    NcfsRoutingUrl = "https://ncfs-reference-service.icap-ncfs.svc.cluster.local",
+                    RebuildReportMessage = "File could not be rebuilt",
+                    ArchivePasswordProtectedReportMessage = "Archive is password protected and could not be rebuilt",
+                    ArchiveErrorReportMessage = "Archive contains an error and could not be rebuilt"
                 })).Times(1);
 
             _httpTest.ShouldHaveCalled("http://endpoint2:401/api/v1/policy")
                 .With(x => x.HttpRequestMessage.Method == HttpMethod.Put)
                 .With(x => x.RequestBody == Newtonsoft.Json.JsonConvert.SerializeObject(new
                 {
-                    GlasswallBlockedFilesAction = NcfsOption.Relay,
-                    UnprocessableFileTypeAction = NcfsOption.Refer
+                    PolicyId = _input.Id,
+                    _input.AdaptionPolicy?.ContentManagementFlags,
+                    _input.AdaptionPolicy?.NcfsActions?.UnprocessableFileTypeAction,
+                    _input.AdaptionPolicy?.NcfsActions?.GlasswallBlockedFilesAction,
+                    NcfsRoutingUrl = "https://ncfs-reference-service.icap-ncfs.svc.cluster.local",
+                    RebuildReportMessage = "File could not be rebuilt",
+                    ArchivePasswordProtectedReportMessage = "Archive is password protected and could not be rebuilt",
+                    ArchiveErrorReportMessage = "Archive contains an error and could not be rebuilt"
                 })).Times(1);
 
             Assert.That(_httpTest.CallLog.Count, Is.EqualTo(4));
-        }
-
-        [Test]
-        public void Constructor_Constructs_With_Mocked_Parameters()
-        {
-            ConstructorAssertions.ConstructsWithMockedParameters<PolicyDistributer>();
         }
     }
 }

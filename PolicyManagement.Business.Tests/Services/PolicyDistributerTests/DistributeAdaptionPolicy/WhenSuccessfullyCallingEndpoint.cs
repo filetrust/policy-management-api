@@ -23,7 +23,6 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
         private Mock<ILogger<PolicyDistributer>> _logger;
         private Mock<IPolicyManagementApiConfiguration> _configuration;
         private PolicyModel _input;
-        private CancellationToken _token;
 
         private HttpTest _httpTest;
 
@@ -62,7 +61,7 @@ namespace PolicyManagement.Business.Tests.Services.PolicyDistributerTests.Distri
                         NcfsRoutingUrl = "routey@mc.route.face"
                     }
                 },
-            }, _token = new CancellationToken());
+            }, new CancellationToken());
 
         }
 

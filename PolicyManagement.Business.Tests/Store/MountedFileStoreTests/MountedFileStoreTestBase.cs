@@ -1,26 +1,37 @@
-﻿using Glasswall.PolicyManagement.Business.Store;
-using Microsoft.Extensions.Logging;
-using Moq;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
+using Glasswall.PolicyManagement.Business.Store;
+using Glasswall.PolicyManagement.Common.Store;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Polly;
 using TestCommon;
 
 namespace PolicyManagement.Business.Tests.Store.MountedFileStoreTests
 {
-    public class MountedFileStoreTestBase : UnitTestBase<MountedFileStore>
+    public class MountedFileStoreTestBase : UnitTestBase<FileStore>
     {
         protected string RootPath;
-        protected Mock<ILogger<MountedFileStore>> Logger;
+        protected Mock<ILogger<FileStore>> Logger;
+        protected Mock<IFileStoreOptions> FileStoreOptions;
         protected CancellationToken CancellationToken;
 
         public void SharedSetup(string rootPath = null)
         {
             rootPath ??= $".{Path.DirectorySeparatorChar}{Guid.NewGuid()}";
             RootPath = rootPath;
-            Logger = new Mock<ILogger<MountedFileStore>>();
+            Logger = new Mock<ILogger<FileStore>>();
+            FileStoreOptions = new Mock<IFileStoreOptions>();
             CancellationToken = new CancellationToken(false);
-            ClassInTest = new MountedFileStore(Logger.Object, RootPath);
+
+            FileStoreOptions.Setup(s => s.RetryPolicy)
+                .Returns(Policy.Handle<Exception>().RetryAsync());
+
+            FileStoreOptions.Setup(s => s.RootPath)
+                .Returns(RootPath);
+
+            ClassInTest = new FileStore(Logger.Object, FileStoreOptions.Object);
         }
     }
 }
