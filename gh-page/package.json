@@ -13,7 +13,7 @@
     "react-test-renderer": "^16.13.1",
     "react-toastify": "^6.0.5",
     "react-transition-group": "^4.3.0",
-    "swagger-ui-react": "^3.25.0"
+    "swagger-ui-react": "^3.48.0"
   },
   "homepage": "http://filetrust.github.io/policy-management-api",
   "scripts": {
